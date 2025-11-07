@@ -1,0 +1,32 @@
+# added for notifications page
+{% extends 'base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+  <h2>Notifications</h2>
+  
+  <h3>Current Notifications</h3>
+  {% if current_notifications %}
+    <ul>
+      {% for notification in current_notifications %}
+        <li>{{ notification }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No new notifications.</p>
+  {% endif %}
+  
+  <hr>
+  
+  <h3>Previous Notifications</h3>
+  {% if previous_notifications %}
+    <ul>
+      {% for notification in previous_notifications %}
+        <li>{{ notification }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No previous notifications.</p>
+  {% endif %}
+{% endblock %}
