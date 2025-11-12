@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from .models import User
 
 class UserRegistrationForm(UserCreationForm):
@@ -16,3 +16,11 @@ class EmailAuthenticationForm(AuthenticationForm):
         self.fields['username'].label = 'Email'
         self.fields['username'].widget.attrs.update({'placeholder': 'you@example.com', 'autofocus': True})
         self.fields['password'].widget.attrs.update({'placeholder': 'password'})
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not User.objects.filter(email__iexact=email, is_active=True).exists():
+            raise forms.ValidationError("This email is not associated with any account.")
+        return email

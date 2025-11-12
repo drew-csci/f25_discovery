@@ -1,26 +1,207 @@
 {% extends "base.html" %}
-{% block content %}
-  <section class="auth-card">
-    <h1>Sign in{% if selected_user_type %} as {{ selected_user_type|title }}{% endif %}</h1>
-    <form method="post" novalidate>
-      {% csrf_token %}
-      <div class="form-field">
-        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-        {{ form.username }}
-        {% if form.username.errors %}<div class="error">{{ form.username.errors.0 }}</div>{% endif %}
-      </div>
-      <div class="form-field">
-        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
-        {{ form.password }}
-        {% if form.password.errors %}<div class="error">{{ form.password.errors.0 }}</div>{% endif %}
-        <div style="text-align: right; margin-top: 0.5rem; font-size: 0.9em;">
-          <a href="{% url 'password_reset' %}">Forgot password?</a>
-        </div>
-      </div>
-      <button class="btn primary" type="submit">Sign in</button>
-    </form>
-    <div class="auth-links">
-      <a href="{% url 'register' %}{% if selected_user_type %}?type={{ selected_user_type }}{% endif %}">Create account</a>
+
+{% block styles %}
+<style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-600: #1d4ed8;
+      --ring: rgba(37, 99, 235, 0.25);
+      --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+      --radius: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --primary: #3b82f6;
+        --primary-600: #2563eb;
+        --ring: rgba(59, 130, 246, 0.35);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background: radial-gradient(1000px 600px at 50% -150px, rgba(37,99,235,.15), transparent 60%), var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(90vw, 460px);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+      border: 1px solid rgba(100,116,139,0.15);
+      text-align: center;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-600));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: .5px;
+      box-shadow: 0 6px 20px var(--ring);
+      user-select: none;
+      font-size: 1.4rem;
+      margin: 0 auto 16px;
+    }
+
+    h1 { font-size: 1.6rem; margin: 12px 0 24px; }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(100,116,139,0.3);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    .submit-btn {
+      width: 100%;
+      text-decoration: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 12px 16px;
+      transition: filter .2s, transform .05s;
+      box-shadow: 0 8px 20px var(--ring);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+    .error {
+      color: #b91c1c;
+      font-size: .9rem;
+      margin-top: .25rem;
+      text-align: left;
+    }
+
+    .hint { color: var(--muted); font-size: .9rem; margin-top: 24px; }
+    a.text-link {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a.text-link:hover {
+      text-decoration: underline;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+    .form-group .password-wrapper input {
+      padding-right: 40px;
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--muted);
+    }
+</style>
+{% endblock styles %}
+
+{% block body %}
+<main class="card">
+  <a href="{% url 'welcome' %}"><div class="logo">DH</div></a>
+  <h1>Log In{% if selected_user_type %} as {{ selected_user_type|title }}{% endif %}</h1>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="error" style="text-align: center; margin-bottom: 1rem;">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+      {{ form.username }}
+      {% if form.username.errors %}<div class="error">{{ form.username.errors.0 }}</div>{% endif %}
     </div>
-  </section>
-{% endblock %}
+
+    <div class="form-group">
+      <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+      <div class="password-wrapper">
+        {{ form.password }}
+        <span id="togglePassword" class="toggle-password">
+          <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+        </span>
+      </div>
+      {% if form.password.errors %}<div class="error">{{ form.password.errors.0 }}</div>{% endif %}
+      <div style="text-align: right; font-size: 0.9rem; margin-top: 0.5rem;">
+        <a href="{% url 'password_reset' %}" class="text-link">Forgot Password?</a>
+      </div>
+    </div>
+
+    <button class="submit-btn" type="submit">Log In</button>
+  </form>
+
+  <p class="hint">Don't have an account?
+    <a href="{% url 'register' %}{% if selected_user_type %}?type={{ selected_user_type }}{% endif %}" class="text-link">Create one</a>
+  </p>
+</main>
+<script>
+  const togglePassword = document.getElementById('togglePassword');
+  const password = document.getElementById('id_password');
+  const eyeOpen = document.getElementById('eye-open');
+  const eyeClosed = document.getElementById('eye-closed');
+
+  togglePassword.addEventListener('click', function () {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    if (type === 'password') {
+      eyeOpen.style.display = 'block';
+      eyeClosed.style.display = 'none';
+    } else {
+      eyeOpen.style.display = 'none';
+      eyeClosed.style.display = 'block';
+    }
+  });
+</script>
+{% endblock body %}

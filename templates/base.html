@@ -1,3 +1,4 @@
+# added for notifications page
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -6,8 +7,12 @@
   <title>Discovery Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% block styles %}{% endblock %}
 </head>
 <body>
+  {% block body %}
+    {% block header %}
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{% url 'welcome' %}">Discovery Hub</a>
@@ -17,6 +22,10 @@
             <li><a href="{% url 'screen1' %}">Screen 1</a></li>
             <li><a href="{% url 'screen2' %}">Screen 2</a></li>
             <li><a href="{% url 'screen3' %}">Screen 3</a></li>
+            <li><a href="{% url 'notifications' %}">Notifications</a></li>
+            <li><a href="{% url 'screen1' %}">Home Page</a></li>
+            <li><a href="{% url 'screen2' %}">View Research</a></li>
+            <li><a href="{% url 'screen3' %}">Match with others</a></li>
             <li class="divider"></li>
             <li class="muted">Hi, {{ user.display_name }}</li>
             <li>
@@ -33,22 +42,37 @@
       </nav>
     </div>
   </header>
+  {% endblock header %}
 
-  <main class="container">
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-          <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
+  <div class="container" style="display: flex; gap: 2rem;">
+    <aside style="width: 200px; flex-shrink: 0;">
+      <h4>Files</h4>
+      <ul style="list-style-type: none; padding-left: 0;">
+        <li>pages/views.py</li>
+        <li>pages/urls.py</li>
+        <li>templates/base.html</li>
+        <li>pages/templates/pages/notifications.html</li>
       </ul>
-    {% endif %}
-    {% block content %}{% endblock %}
-  </main>
+    </aside>
+    <main style="flex-grow: 1;">
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 
+  {% block footer %}
   <footer class="site-footer">
     <div class="container">
       <small>&copy; {% now "Y" %} Discovery Hub</small>
     </div>
   </footer>
+  {% endblock footer %}
+  {% endblock body %}
 </body>
 </html>

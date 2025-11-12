@@ -84,27 +84,5 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'screen1'
 LOGOUT_REDIRECT_URL = 'login'
 
-# For development, emails can be printed to console by uncommenting the line below
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# For sending real emails via SMTP
-# To enable email sending, you must configure an SMTP server by setting the
-# following environment variables in your .env file.
-#
-# Example for Gmail:
-# EMAIL_HOST=smtp.gmail.com
-# EMAIL_PORT=587
-# EMAIL_USE_TLS=True
-# EMAIL_HOST_USER=your_email@gmail.com
-# EMAIL_HOST_PASSWORD=your_gmail_app_password
-# DEFAULT_FROM_EMAIL=your_email@gmail.com
-#
-# Note: For services like Gmail, you may need to generate an "App Password"
-# instead of using your regular account password due to security measures.
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+# For development, print password reset emails to the console.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

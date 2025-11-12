@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-  <section class="dash-card">
-    <h1>Screen 1 {{ role }}</h1>
-    <p class="muted">Hello {{ request.user.display_name }} ({{ role }})</p>
+<div class="space-y-8">
+  <!-- Dashboard Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+    <p class="text-gray-500 mt-1">Hello {{ request.user.display_name }}, welcome to your dashboard.</p>
+  </div>
 
+  <!-- Main Content Card -->
+  <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+    
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">{{ role }} Overview</h2>
+    
+    <!-- Role-specific content will be included here -->
     {% if request.user.user_type == 'university' %}
       {% include "pages/partials/s1_university.html" %}
     {% elif request.user.user_type == 'company' %}
@@ -14,9 +23,10 @@
       <p>No role specific content yet.</p>
     {% endif %}
 
-    <div class="button-row" style="margin-top:1rem;">
-      <a class="btn" href="{% url 'screen2' %}">Go to Screen 2</a>
-      <a class="btn" href="{% url 'screen3' %}">Go to Screen 3</a>
+    <div class="border-t mt-6 pt-6 flex space-x-4">
+        <a class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg" href="{% url 'screen2' %}">View Analytics</a>
+        <a class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition" href="{% url 'screen3' %}">Manage Settings</a>
     </div>
-  </section>
+  </div>
+</div>
 {% endblock %}
