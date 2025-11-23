@@ -75,3 +75,21 @@ class EmailVerificationPendingView(View):
         # If the user is not logged in, redirect them to login
         else:
             return redirect('login')
+
+class ResendVerificationEmailView(View):
+    def post(self, request):
+        email = request.POST.get('email') # Assuming the form in email_verification_pending.html will have an email field
+        if not email:
+            messages.error(request, "Email address is required to resend verification.")
+            return redirect('email_verification_pending')
+
+        try:
+            user = User.objects.get(email__iexact=email, is_email_verified=False)
+            user.send_verification_email()
+            messages.success(request, f"A new verification email has been sent to {email}. Please check your inbox.")
+        except User.DoesNotExist:
+            messages.error(request, "No unverified account found with that email address.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+
+        return redirect('email_verification_pending')
