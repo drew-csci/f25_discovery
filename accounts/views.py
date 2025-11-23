@@ -75,4 +75,3 @@ class EmailVerificationPendingView(View):
         # If the user is not logged in, redirect them to login
         else:
             return redirect('login')
-
