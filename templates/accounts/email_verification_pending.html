@@ -137,7 +137,8 @@
             }
         {% endif %}
 
-        const showResendButton = {{ show_resend_button|default:True|lower }};
+        // Correctly pass the boolean value to JavaScript
+        const showResendButton = {{ show_resend_button|default:True|lower }}; 
 
         if (!showResendButton) {
             resendButton.style.display = 'none';
