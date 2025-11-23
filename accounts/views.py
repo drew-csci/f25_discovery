@@ -115,6 +115,9 @@ class ResendVerificationEmailView(View):
         # Rate limiting logic
         if resend_attempts >= 5:
             messages.error(request, "You have exceeded the maximum number of resend attempts. Please sign up again.")
+            # Ensure session is updated even on error to reflect the attempt limit
+            request.session['resend_attempts'] = resend_attempts # Keep it at max
+            request.session['last_resend_time'] = timezone.now().isoformat() # Update time to prevent immediate re-attempt if logic changes
             return redirect('email_verification_pending')
 
         if last_resend_time:
@@ -122,6 +125,8 @@ class ResendVerificationEmailView(View):
             time_since_last_resend = timezone.now() - last_resend_dt
             if time_since_last_resend.total_seconds() < 30:
                 messages.error(request, "Please wait a moment before trying to resend the email again.")
+                # Ensure session is updated to reflect the cooldown
+                request.session['last_resend_time'] = timezone.now().isoformat()
                 return redirect('email_verification_pending')
 
         try:
@@ -135,7 +140,13 @@ class ResendVerificationEmailView(View):
             messages.success(request, f"A new verification email has been sent to {email}. Please check your inbox.")
         except User.DoesNotExist:
             messages.error(request, "No unverified account found with that email address.")
+            # Even if user not found, update session to prevent rapid guessing of emails
+            request.session['resend_attempts'] = resend_attempts + 1
+            request.session['last_resend_time'] = timezone.now().isoformat()
         except Exception as e:
             messages.error(request, f"An error occurred: {e}")
+            # Ensure session is updated even on general error
+            request.session['resend_attempts'] = resend_attempts + 1
+            request.session['last_resend_time'] = timezone.now().isoformat()
 
         return redirect('email_verification_pending')

@@ -42,6 +42,7 @@
         background: var(--bg); /* Using theme variable */
         color: var(--text); /* Using theme variable */
         font-size: 1rem;
+        box-sizing: border-box; /* Ensure padding is included in width */
     }
     .form-group input:focus {
         outline: none;
@@ -94,10 +95,10 @@
     {# The form for resending email #}
     <form method="post" action="{% url 'resend_verification_email' %}" style="display: inline;" id="resendForm">
         {% csrf_token %}
-        {# Email input field #}
+        {# Email input field with a visual cue #}
         <div class="form-group">
             <label for="id_email">Enter your email to resend verification:</label>
-            <input type="email" name="email" id="id_email" required>
+            <input type="email" name="email" id="id_email" required placeholder="you@example.com">
         </div>
         
         {# Resend button, conditionally displayed by JavaScript #}
@@ -207,4 +208,3 @@
         }
     });
 </script>
-{% endblock body %}
