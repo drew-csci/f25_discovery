@@ -10,7 +10,12 @@
     {# This form will submit a POST request to a 'resend_verification_email' URL #}
     <form method="post" action="{% url 'resend_verification_email' %}" style="display: inline;">
         {% csrf_token %}
-        <button type="submit" class="btn btn-secondary" style="margin-top: 1rem;">Resend Verification Email</button>
+        {# Added an email input field for the user to specify their email #}
+        <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label for="id_email" style="font-size: 0.8rem; color: var(--muted);">Enter your email to resend verification:</label>
+            <input type="email" name="email" id="id_email" required style="width: 80%; padding: 8px; border-radius: 8px; border: 1px solid rgba(100,116,139,0.3); background: var(--bg); color: var(--text);">
+        </div>
+        <button type="submit" class="btn btn-secondary" style="margin-top: 0.5rem;">Resend Verification Email</button>
     </form>
 
     <p style="margin-top: 1.5rem;">

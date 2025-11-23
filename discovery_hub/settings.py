@@ -84,18 +84,26 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'screen1'
 LOGOUT_REDIRECT_URL = 'login'
 
-# For development, print password reset emails to the console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# --- EMAIL CONFIGURATION ---
+# For development, emails will be printed to the console.
+# For production, configure a real email backend (e.g., SMTP).
 
-# Add these settings for email verification
+# Use console backend for development to see emails in the terminal
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For actual email sending (e.g., using Gmail, SendGrid, etc.)
+# You MUST configure these settings with your email provider's details.
+# For Gmail, you might need to generate an "App Password".
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.mailtrap.io') # Example: 'smtp.gmail.com' or 'smtp.mailtrap.io'
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587)) # Example: 587 for TLS, 465 for SSL
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true' # Use TLS
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() == 'true' # Use SSL (usually one or the other, not both)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER') # Your email address (e.g., 'your_email@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # Your email password or app-specific password
+
+# Site URL and default sender email
 SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000') # Your site's base URL
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@discoveryhub.com')
 
-# If you are using a production email backend (e.g., SMTP), configure it here.
-# Example for Gmail (use environment variables for sensitive info):
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# --- END EMAIL CONFIGURATION ---
