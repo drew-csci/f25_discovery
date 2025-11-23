@@ -1,4 +1,3 @@
-# added for notifications page
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -12,7 +11,6 @@
 </head>
 <body>
   {% block body %}
-    {% block header %}
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{% url 'welcome' %}">Discovery Hub</a>
@@ -23,9 +21,7 @@
             <li><a href="{% url 'screen2' %}">Screen 2</a></li>
             <li><a href="{% url 'screen3' %}">Screen 3</a></li>
             <li><a href="{% url 'notifications' %}">Notifications</a></li>
-            <li><a href="{% url 'screen1' %}">Home Page</a></li>
-            <li><a href="{% url 'screen2' %}">View Research</a></li>
-            <li><a href="{% url 'screen3' %}">Match with others</a></li>
+            <li><a href="{% url 'company_home' %}">Company Home</a></li> {# Assuming this is the main dashboard #}
             <li class="divider"></li>
             <li class="muted">Hi, {{ user.display_name }}</li>
             <li>
@@ -42,23 +38,27 @@
       </nav>
     </div>
   </header>
-  {% endblock header %}
 
-  <div class="container" style="display: flex; gap: 2rem;">
+  <div class="container" style="display: flex; gap: 2rem; margin-top: 2rem;">
+    {% if user.is_authenticated %}
     <aside style="width: 200px; flex-shrink: 0;">
-      <h4>Files</h4>
+      <h4>Navigation</h4>
       <ul style="list-style-type: none; padding-left: 0;">
-        <li>pages/views.py</li>
-        <li>pages/urls.py</li>
-        <li>templates/base.html</li>
-        <li>pages/templates/pages/notifications.html</li>
+        <li><a href="{% url 'screen1' %}">Screen 1</a></li>
+        <li><a href="{% url 'screen2' %}">Screen 2</a></li>
+        <li><a href="{% url 'screen3' %}">Screen 3</a></li>
+        <li><a href="{% url 'notifications' %}">Notifications</a></li>
+        <li><a href="{% url 'company_home' %}">Company Home</a></li>
       </ul>
     </aside>
+    {% endif %}
     <main style="flex-grow: 1;">
       {% if messages %}
-        <ul class="messages">
+        <ul class="messages" style="list-style: none; padding: 0; margin-bottom: 1rem;">
           {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
+            <li class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert" style="padding: 1rem; border-radius: 0.5rem; margin-bottom: 0.5rem; {% if message.tags == 'success' %}background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0;{% elif message.tags == 'info' %}background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;{% elif message.tags == 'warning' %}background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;{% elif message.tags == 'error' %}background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;{% else %}background-color: #e5e7eb; color: #1f2937; border: 1px solid #d1d5db;{% endif %}">
+              {{ message }}
+            </li>
           {% endfor %}
         </ul>
       {% endif %}
@@ -66,13 +66,11 @@
     </main>
   </div>
 
-  {% block footer %}
   <footer class="site-footer">
     <div class="container">
       <small>&copy; {% now "Y" %} Discovery Hub</small>
     </div>
   </footer>
-  {% endblock footer %}
   {% endblock body %}
 </body>
 </html>

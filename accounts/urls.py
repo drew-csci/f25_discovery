@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
-from .views import RegisterView, CustomLoginView
+from .views import RegisterView, CustomLoginView, EmailVerifyView, EmailVerificationPendingView # Import EmailVerificationPendingView
 from .forms import CustomPasswordResetForm
 
 urlpatterns = [
@@ -27,4 +27,10 @@ urlpatterns = [
     path('reset/done/',
          auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'),
          name='password_reset_complete'),
+
+    # Email verification URL
+    path('email/verify/<uuid:token>/', EmailVerifyView.as_view(), name='email_verify'),
+
+    # URL for the pending verification page
+    path('email/verification-pending/', EmailVerificationPendingView.as_view(), name='email_verification_pending'),
 ]
