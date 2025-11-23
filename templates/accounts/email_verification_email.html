@@ -5,8 +5,18 @@
     <style>
         body { font-family: sans-serif; line-height: 1.6; }
         .container { padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; }
-        .button { display: inline-block; padding: 10px 20px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 5px; }
-        .button:hover { background-color: #1d4ed8; }
+        /* Changed button colors for better contrast */
+        .button { 
+            display: inline-block; 
+            padding: 12px 25px; /* Slightly larger padding */
+            background-color: #1d4ed8; /* Darker blue for better contrast */
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; /* Slightly more rounded */
+            font-weight: 600; /* Bold text */
+            transition: background-color 0.2s ease;
+        }
+        .button:hover { background-color: #1e40af; } /* Darker on hover */
     </style>
 </head>
 <body>

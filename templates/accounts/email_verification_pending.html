@@ -1,25 +1,207 @@
 {% extends "base.html" %}
 
+{% block styles %}
+<style>
+    /* Inherit styles from base.html or define specific ones */
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: var(--card); /* Using theme variable */
+        border-radius: var(--radius); /* Using theme variable */
+        box-shadow: var(--shadow); /* Using theme variable */
+        text-align: center;
+        border: 1px solid rgba(100,116,139,0.15);
+    }
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: var(--text); /* Using theme variable */
+    }
+    p {
+        color: var(--muted); /* Using theme variable */
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    .form-group label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 0.4rem;
+        text-align: left;
+    }
+    .form-group input[type="email"] {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(100,116,139,0.3);
+        background: var(--bg); /* Using theme variable */
+        color: var(--text); /* Using theme variable */
+        font-size: 1rem;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary); /* Using theme variable */
+        box-shadow: 0 0 0 3px var(--ring); /* Using theme variable */
+    }
+    .btn-secondary {
+        background-color: var(--muted); /* Using theme variable */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+    .btn-secondary:hover {
+        background-color: #6b7280; /* Slightly darker muted color */
+    }
+    .btn-primary {
+        background-color: var(--primary); /* Using theme variable */
+        color: white;
+        padding: 12px 25px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+    .btn-primary:hover {
+        background-color: var(--primary-600); /* Using theme variable */
+    }
+    .resend-timer {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-top: 10px;
+    }
+</style>
+{% endblock styles %}
+
 {% block body %}
-<div class="container" style="text-align: center; margin-top: 50px; max-width: 600px;">
+<div class="container">
     <h1>Email Verification Pending</h1>
     <p>Thank you for registering! A verification email has been sent to your inbox.</p>
     <p>Please click the link in the email to verify your account and activate your access.</p>
-    <p>If you did not receive the email, please check your spam folder. You can also request a new verification email by clicking the button below.</p>
+    <p>If you did not receive the email, please check your spam folder.</p>
     
-    {# This form will submit a POST request to a 'resend_verification_email' URL #}
-    <form method="post" action="{% url 'resend_verification_email' %}" style="display: inline;">
+    {# The form for resending email #}
+    <form method="post" action="{% url 'resend_verification_email' %}" style="display: inline;" id="resendForm">
         {% csrf_token %}
-        {# Added an email input field for the user to specify their email #}
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="id_email" style="font-size: 0.8rem; color: var(--muted);">Enter your email to resend verification:</label>
-            <input type="email" name="email" id="id_email" required style="width: 80%; padding: 8px; border-radius: 8px; border: 1px solid rgba(100,116,139,0.3); background: var(--bg); color: var(--text);">
+        {# Email input field #}
+        <div class="form-group">
+            <label for="id_email">Enter your email to resend verification:</label>
+            <input type="email" name="email" id="id_email" required>
         </div>
-        <button type="submit" class="btn btn-secondary" style="margin-top: 0.5rem;">Resend Verification Email</button>
+        
+        {# Resend button, conditionally displayed by JavaScript #}
+        <button type="submit" id="resendButton" class="btn btn-secondary" style="margin-top: 0.5rem;">Resend Verification Email</button>
+        <div id="resendTimer" class="resend-timer" style="display: none;"></div>
     </form>
 
     <p style="margin-top: 1.5rem;">
         <a href="{% url 'login' %}" class="btn btn-primary">Go to Login</a>
     </p>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const resendButton = document.getElementById('resendButton');
+        const resendTimerDiv = document.getElementById('resendTimer');
+        const resendForm = document.getElementById('resendForm');
+        const emailInput = document.getElementById('id_email');
+
+        const maxAttempts = {{ max_resend_attempts|default:5 }};
+        const cooldownSeconds = {{ resend_cooldown_seconds|default:30 }};
+        let attempts = {{ resend_attempts|default:0 }};
+        let lastResendTime = null; // This would ideally be set by the server if available
+
+        // Check if the server indicated a cooldown or too many attempts
+        {% if messages %}
+            let serverMessage = false;
+            {% for message in messages %}
+                {% if message.tags == 'warning' or message.tags == 'error' %}
+                    serverMessage = true;
+                {% endif %}
+            {% endfor %}
+            if (serverMessage) {
+                // If server sent a message about cooldown or too many attempts,
+                // we assume the button should be hidden or disabled.
+                // The server-side logic in views.py already handles this by setting 'show_resend_button'
+            }
+        {% endif %}
+
+        const showResendButton = {{ show_resend_button|default:True|lower }};
+
+        if (!showResendButton) {
+            resendButton.style.display = 'none';
+            resendTimerDiv.style.display = 'block';
+            // If server provided a specific remaining time, use it. Otherwise, default to 30s.
+            // This part is tricky without server-side dynamic remaining time.
+            // For simplicity, we'll assume the server message implies a cooldown is active.
+            // A more robust solution would involve server passing remaining time.
+            updateTimerDisplay(cooldownSeconds); // Start with full cooldown if button is hidden
+            startTimer(cooldownSeconds);
+        } else {
+            resendButton.style.display = 'inline-block';
+            resendTimerDiv.style.display = 'none';
+        }
+
+        resendForm.addEventListener('submit', function(event) {
+            if (!showResendButton && attempts >= maxAttempts) {
+                event.preventDefault(); // Prevent submission if disabled by rate limit
+                alert("You have exceeded the maximum number of resend attempts. Please sign up again.");
+                return;
+            }
+
+            // Basic check for email input
+            if (!emailInput.value.trim()) {
+                alert("Please enter your email address.");
+                event.preventDefault();
+                return;
+            }
+
+            // If the button is shown and clicked, we initiate the process.
+            // The server will handle the actual rate limiting and cooldown.
+            // We'll just visually disable the button and start a timer after submission.
+            
+            resendButton.disabled = true;
+            resendButton.textContent = 'Sending...';
+            resendTimerDiv.style.display = 'block';
+            
+            // Start a timer for the cooldown period (e.g., 30 seconds)
+            startTimer(cooldownSeconds);
+        });
+
+        function startTimer(seconds) {
+            let remainingTime = seconds;
+            updateTimerDisplay(remainingTime);
+            const timerInterval = setInterval(function() {
+                remainingTime--;
+                updateTimerDisplay(remainingTime);
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    resendButton.disabled = false;
+                    resendButton.textContent = 'Resend Verification Email';
+                    resendButton.style.display = 'inline-block';
+                    resendTimerDiv.style.display = 'none';
+                    // Reset attempts on successful cooldown completion if needed,
+                    // but server-side session management is more reliable.
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(seconds) {
+            if (seconds > 0) {
+                resendTimerDiv.textContent = `Please wait ${seconds} seconds to resend.`;
+            } else {
+                resendTimerDiv.textContent = '';
+            }
+        }
+    });
+</script>
 {% endblock body %}

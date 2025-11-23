@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from .forms import UserRegistrationForm, EmailAuthenticationForm
 from .models import User
+from django.utils import timezone
+import datetime
 
 class RegisterView(FormView):
     template_name = 'accounts/register.html'
@@ -34,7 +36,7 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         # Check if the user's email is verified before redirecting
         if self.request.user.is_authenticated and not self.request.user.is_email_verified:
-            messages.warning(self.request, 'Please verify your email address to continue.')
+            messages.warning(self.request, 'Unable to login until email is verified.') # Specific message
             return reverse_lazy('email_verification_pending') # Redirect to a pending verification page
         return reverse_lazy('screen1')
 
@@ -71,21 +73,65 @@ class EmailVerificationPendingView(View):
             return redirect('screen1')
         # If the user is logged in but not verified, show them the pending page
         elif request.user.is_authenticated and not request.user.is_email_verified:
-            return render(request, 'accounts/email_verification_pending.html')
+            # Check rate limiting for resend attempts
+            resend_attempts = request.session.get('resend_attempts', 0)
+            last_resend_time = request.session.get('last_resend_time')
+            
+            context = {
+                'resend_attempts': resend_attempts,
+                'max_resend_attempts': 5,
+                'resend_cooldown_seconds': 30,
+                'show_resend_button': True # Default to show
+            }
+
+            if last_resend_time:
+                last_resend_dt = datetime.datetime.fromisoformat(last_resend_time)
+                time_since_last_resend = timezone.now() - last_resend_dt
+                
+                if resend_attempts >= 5 or time_since_last_resend.total_seconds() < 30:
+                    context['show_resend_button'] = False
+                    if time_since_last_resend.total_seconds() < 30:
+                        remaining_time = 30 - time_since_last_resend.total_seconds()
+                        messages.warning(request, f"Please wait {remaining_time:.0f} seconds before trying to resend the email again.")
+                    elif resend_attempts >= 5:
+                        messages.warning(request, "You have exceeded the maximum number of resend attempts. Please sign up again.")
+            
+            return render(request, 'accounts/email_verification_pending.html', context)
         # If the user is not logged in, redirect them to login
         else:
             return redirect('login')
 
 class ResendVerificationEmailView(View):
     def post(self, request):
-        email = request.POST.get('email') # Assuming the form in email_verification_pending.html will have an email field
+        email = request.POST.get('email')
+        
         if not email:
             messages.error(request, "Email address is required to resend verification.")
             return redirect('email_verification_pending')
 
+        resend_attempts = request.session.get('resend_attempts', 0)
+        last_resend_time = request.session.get('last_resend_time')
+        
+        # Rate limiting logic
+        if resend_attempts >= 5:
+            messages.error(request, "You have exceeded the maximum number of resend attempts. Please sign up again.")
+            return redirect('email_verification_pending')
+
+        if last_resend_time:
+            last_resend_dt = datetime.datetime.fromisoformat(last_resend_time)
+            time_since_last_resend = timezone.now() - last_resend_dt
+            if time_since_last_resend.total_seconds() < 30:
+                messages.error(request, "Please wait a moment before trying to resend the email again.")
+                return redirect('email_verification_pending')
+
         try:
             user = User.objects.get(email__iexact=email, is_email_verified=False)
             user.send_verification_email()
+            
+            # Update session for rate limiting
+            request.session['resend_attempts'] = resend_attempts + 1
+            request.session['last_resend_time'] = timezone.now().isoformat()
+            
             messages.success(request, f"A new verification email has been sent to {email}. Please check your inbox.")
         except User.DoesNotExist:
             messages.error(request, "No unverified account found with that email address.")
