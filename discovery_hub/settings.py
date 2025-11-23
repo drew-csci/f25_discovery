@@ -86,3 +86,16 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # For development, print password reset emails to the console.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Add these settings for email verification
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000') # Your site's base URL
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@discoveryhub.com')
+
+# If you are using a production email backend (e.g., SMTP), configure it here.
+# Example for Gmail (use environment variables for sensitive info):
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
