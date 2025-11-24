@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+# Import get_user_model here, but defer its direct use until needed.
 from django.contrib.auth import get_user_model
-# Removed form imports as they are now in forms.py
+from django import forms
 
-User = get_user_model()
+# Define a placeholder or a function to get the user model when it's safe to do so.
+# This helps prevent issues where get_user_model() is called before the app is ready.
+def get_custom_user_model():
+    return get_user_model()
 
 class User(AbstractUser):
     class UserType(models.TextChoices):
@@ -32,7 +36,8 @@ class User(AbstractUser):
         return full if full else self.email
 
 class InvestorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='investor_profile')
+    # Use the custom user model obtained via the helper function
+    user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='investor_profile')
     fund_name = models.CharField(max_length=255)
     stages = models.CharField(max_length=255, help_text="e.g., Seed, Series A, Series B")
     ticket_size = models.CharField(max_length=255, help_text="e.g., $100k - $1M")
@@ -43,7 +48,7 @@ class InvestorProfile(models.Model):
         return f"Investor Profile for {self.user.display_name}"
 
 class CompanyProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='company_profile')
+    user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='company_profile')
     company_name = models.CharField(max_length=255)
     industry = models.CharField(max_length=255)
     # Add other company-specific fields as needed
@@ -52,7 +57,7 @@ class CompanyProfile(models.Model):
         return f"Company Profile for {self.company_name}"
 
 class UniversityProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='university_profile')
+    user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='university_profile')
     university_name = models.CharField(max_length=255)
     # Add other university-specific fields as needed
 
