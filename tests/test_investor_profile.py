@@ -5,7 +5,7 @@ from django.contrib.admin.sites import AdminSite
 from accounts.models import InvestorProfile
 from accounts.admin import InvestorProfileInline, UserAdmin
 from django.core.management import call_command
-from django.db import OperationalError
+from django.db import OperationalError, transaction
 
 # Use get_user_model() to ensure we are using the custom user model
 User = get_user_model()
@@ -14,20 +14,16 @@ class InvestorProfileAdminTest(TransactionTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Ensure migrations are applied. TransactionTestCase should handle isolation.
         try:
-            # Apply migrations before any tests run in this class
             call_command('migrate', verbosity=0, interactive=False)
             cls.migration_failed = False
-        except OperationalError as e:
-            print(f"Migration failed: {e}")
-            cls.migration_failed = True
-        except Exception as e: # Catch other potential errors during migration
-            print(f"An unexpected error occurred during migration: {e}")
+        except Exception as e:
+            print(f"Migration failed in setUpClass: {e}")
             cls.migration_failed = True
 
-        # If migrations failed, we cannot reliably create users or run tests
         if cls.migration_failed:
-            return
+            return # Skip user creation if migrations failed
 
         # Create admin user once for the class
         try:
@@ -116,11 +112,8 @@ class InvestorProfileUITest(TransactionTestCase):
             # Apply migrations before any tests run in this class
             call_command('migrate', verbosity=0, interactive=False)
             cls.migration_failed = False
-        except OperationalError as e:
-            print(f"Migration failed: {e}")
-            cls.migration_failed = True
-        except Exception as e: # Catch other potential errors during migration
-            print(f"An unexpected error occurred during migration: {e}")
+        except Exception as e:
+            print(f"Migration failed in setUpClass: {e}")
             cls.migration_failed = True
 
     def setUp(self):
