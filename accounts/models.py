@@ -1,11 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.forms import ChoiceField, RadioSelect
-# Import get_user_model here to ensure it's available when needed
 from django.contrib.auth import get_user_model
-from django import forms # Import forms module
+# Removed form imports as they are now in forms.py
 
-# Get the custom user model
 User = get_user_model()
 
 class User(AbstractUser):
@@ -45,8 +42,6 @@ class InvestorProfile(models.Model):
     def __str__(self):
         return f"Investor Profile for {self.user.display_name}"
 
-# Assuming CompanyProfile and UniversityProfile are also needed,
-# and that they should be defined in this file as well.
 class CompanyProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='company_profile')
     company_name = models.CharField(max_length=255)
@@ -63,29 +58,3 @@ class UniversityProfile(models.Model):
 
     def __str__(self):
         return f"University Profile for {self.university_name}"
-
-# Forms (assuming these are still relevant and need to be kept)
-# Note: These forms are defined here for completeness, but the issue was likely with
-# how Django's internal auth forms were trying to access the user model.
-# The fix in settings.py and ensuring accounts is loaded correctly should resolve it.
-class UserRegistrationForm(UserCreationForm):
-    user_type = forms.ChoiceField(choices=User.UserType.choices, widget=forms.RadioSelect)
-
-    class Meta:
-        model = User
-        fields = UserCreationForm.Meta.fields + ('user_type', 'first_name', 'last_name', 'email')
-
-class EmailAuthenticationForm(AuthenticationForm):
-    # Field is still named "username" internally; label it clearly as Email.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].label = 'Email'
-        self.fields['username'].widget.attrs.update({'placeholder': 'you@example.com', 'autofocus': True})
-
-class CustomPasswordResetForm(PasswordResetForm):
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        # Use email directly for lookup, as it's the username field
-        if not User.objects.filter(email__iexact=email, is_active=True).exists():
-            raise forms.ValidationError("This email is not associated with any account.")
-        return email

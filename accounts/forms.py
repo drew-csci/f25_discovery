@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth import get_user_model
-from .models import InvestorProfile
+from .models import InvestorProfile, CompanyProfile, UniversityProfile # Import other models if needed
 
 User = get_user_model()
 
@@ -38,3 +38,14 @@ class InvestorProfileForm(forms.ModelForm):
         #     'therapeutic_areas': forms.TextInput(attrs={'placeholder': 'e.g., Oncology, Cardiology'}),
         #     'geography': forms.TextInput(attrs={'placeholder': 'e.g., North America, Europe'}),
         # }
+
+# Add forms for CompanyProfile and UniversityProfile if they are needed for UI interactions
+# class CompanyProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = CompanyProfile
+#         fields = '__all__' # Or specify fields
+
+# class UniversityProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = UniversityProfile
+#         fields = '__all__' # Or specify fields
