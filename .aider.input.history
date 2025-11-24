@@ -576,3 +576,24 @@
 +> omepage then. Put Boxes for recent funding, Other university projects that  
 +> are popular and a searching option for filtering different companies that s 
 +> pend on research patent
+
+# 2025-11-24 12:42:01.117197
++1. Create University TTO profile model
++ Task:
++ Add a TTOProfile model linked onetoone with User for user_type='university' (fields: institution name, office name, country, therapeutic focus tags, TRL range interest, etc.).
++ Test:
++Create a User with user_type='university' in the shell and a TTOProfile.
++Confirm you can query user.ttoprofile and see all fields persisted correctly.
++
+
+# 2025-11-24 12:42:11.487825
++Y
+
+# 2025-11-24 12:42:33.095709
++/run python manage.py shell
+
+# 2025-11-24 12:42:33.095709
++/run python manage.py shell
+
+# 2025-11-24 12:48:50.709470
++Y
