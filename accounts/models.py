@@ -1,11 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# Import get_user_model here, but defer its direct use until needed.
 from django.contrib.auth import get_user_model
 from django import forms
 
-# Define a placeholder or a function to get the user model when it's safe to do so.
-# This helps prevent issues where get_user_model() is called before the app is ready.
 def get_custom_user_model():
     return get_user_model()
 
@@ -21,6 +18,8 @@ class User(AbstractUser):
         default=UserType.UNIVERSITY,
     )
     email = models.EmailField(unique=True)
+    # Add is_email_verified field with a default value
+    is_email_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']  # keep username for admin compatibility
@@ -36,7 +35,6 @@ class User(AbstractUser):
         return full if full else self.email
 
 class InvestorProfile(models.Model):
-    # Use the custom user model obtained via the helper function
     user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='investor_profile')
     fund_name = models.CharField(max_length=255)
     stages = models.CharField(max_length=255, help_text="e.g., Seed, Series A, Series B")

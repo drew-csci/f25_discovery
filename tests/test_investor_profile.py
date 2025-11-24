@@ -15,10 +15,12 @@ class InvestorProfileAdminTest(TestCase):
         self.user_admin = UserAdmin(User, self.admin_site)
 
         # Create an admin user
+        # Explicitly set is_email_verified to True or False as it's a not-null field
         self.admin_user = User.objects.create_superuser(
             email='admin@example.com',
             username='admin',
-            password='password123'
+            password='password123',
+            is_email_verified=True # Explicitly set
         )
 
         # Create an investor user
@@ -26,10 +28,10 @@ class InvestorProfileAdminTest(TestCase):
             email='investor@example.com',
             username='investor',
             password='password123',
-            user_type=User.UserType.INVESTOR
+            user_type=User.UserType.INVESTOR,
+            is_email_verified=True # Explicitly set
         )
         # Ensure InvestorProfile is created for the investor user
-        # Use the custom user model instance
         InvestorProfile.objects.create(user=self.investor_user)
 
     def test_investor_profile_inline_in_admin(self):
@@ -52,6 +54,7 @@ class InvestorProfileAdminTest(TestCase):
             'user_type': User.UserType.INVESTOR,
             'password': 'newpassword123',
             'password2': 'newpassword123', # For password confirmation
+            'is_email_verified': True # Explicitly set for the new user creation
         }
         
         # Post data to create the user
@@ -72,7 +75,8 @@ class InvestorProfileUITest(TestCase):
             email='investor@example.com',
             username='investor',
             password='password123',
-            user_type=User.UserType.INVESTOR
+            user_type=User.UserType.INVESTOR,
+            is_email_verified=True # Explicitly set
         )
         # Ensure InvestorProfile is created for the investor user
         self.investor_profile = InvestorProfile.objects.create(
