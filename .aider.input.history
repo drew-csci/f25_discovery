@@ -567,3 +567,18 @@
 
 # 2025-11-09 16:15:26.520648
 +n
+
+# 2025-11-24 12:45:08.098100
++For this web app, define a PubMedSearchService with search_publications(query, limit=20) returning dummy publication dicts (title, journal, year, authors, link).
++
+
+# 2025-11-24 12:47:22.630878
++Now write a test that I can use to test the code you just generated so that the test does the following: Call search_publications("gene therapy") in the shell.
++Verify the structure and length of the returned list match expectations.
++
+
+# 2025-11-24 12:47:56.579041
++/run python manage.py test tests.test_pubmed_search_service
+
+# 2025-11-24 12:47:56.580224
++/run python manage.py test tests.test_pubmed_search_service
