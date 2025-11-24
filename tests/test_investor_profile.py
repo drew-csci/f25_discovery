@@ -11,20 +11,13 @@ from django.db import OperationalError, transaction
 User = get_user_model()
 
 class InvestorProfileAdminTest(TransactionTestCase):
+    # Using TransactionTestCase means setUpClass and tearDownClass are run once per test class.
+    # Django's test runner should handle migrations automatically for TransactionTestCase.
+    # We will rely on that and remove explicit migration calls to avoid conflicts.
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Ensure migrations are applied. TransactionTestCase should handle isolation.
-        try:
-            call_command('migrate', verbosity=0, interactive=False)
-            cls.migration_failed = False
-        except Exception as e:
-            print(f"Migration failed in setUpClass: {e}")
-            cls.migration_failed = True
-
-        if cls.migration_failed:
-            return # Skip user creation if migrations failed
-
         # Create admin user once for the class
         try:
             cls.admin_user = User.objects.create_superuser(
@@ -70,14 +63,11 @@ class InvestorProfileAdminTest(TransactionTestCase):
 
     def test_investor_profile_inline_in_admin(self):
         """Test that InvestorProfile is available as an inline in UserAdmin."""
-        if self.migration_failed:
-            self.skipTest("Migrations failed, skipping test.")
+        # This test doesn't create users, so it should pass if migrations are applied.
         self.assertIn(InvestorProfileInline, self.user_admin.inlines)
 
     def test_create_investor_user_via_admin(self):
         """Test creating an investor user through the Django admin interface."""
-        if self.migration_failed:
-            self.skipTest("Migrations failed, skipping test.")
         if not self.admin_user:
             self.skipTest("Admin user not created successfully.")
 
@@ -105,25 +95,9 @@ class InvestorProfileAdminTest(TransactionTestCase):
         self.assertTrue(InvestorProfile.objects.filter(user=new_investor).exists())
 
 class InvestorProfileUITest(TransactionTestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        try:
-            # Apply migrations before any tests run in this class
-            call_command('migrate', verbosity=0, interactive=False)
-            cls.migration_failed = False
-        except Exception as e:
-            print(f"Migration failed in setUpClass: {e}")
-            cls.migration_failed = True
-
     def setUp(self):
         self.client = Client()
         # Create an investor user
-        if self.migration_failed: # Skip user creation if migrations failed
-            self.investor_user = None
-            self.investor_profile = None
-            return
-
         try:
             self.investor_user = User.objects.create_user(
                 email='investor@example.com',
@@ -154,8 +128,6 @@ class InvestorProfileUITest(TransactionTestCase):
 
     def test_fill_and_save_investor_profile_ui(self):
         """Test filling and saving investor profile data through the UI."""
-        if self.migration_failed:
-            self.skipTest("Migrations failed, skipping test.")
         if not self.investor_user:
             self.skipTest("Investor user not created successfully.")
 
@@ -187,8 +159,6 @@ class InvestorProfileUITest(TransactionTestCase):
 
     def test_view_investor_profile_data_on_reload(self):
         """Test that data appears correctly on reload after saving."""
-        if self.migration_failed:
-            self.skipTest("Migrations failed, skipping test.")
         if not self.investor_user:
             self.skipTest("Investor user not created successfully.")
 
