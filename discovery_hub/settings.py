@@ -71,6 +71,15 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST','34.16.174.60'),
         'PORT': int(os.getenv('DB_PORT','5432')),
         'CONN_MAX_AGE': 60,
+        'TEST': {
+            'NAME': os.getenv('DB_TEST_NAME', 'test_discovery_db'), # Optional: specify a different name for test DB
+            'MIRROR': 'default', # This tells Django to use the 'default' database settings for tests
+            # If you want to avoid creating a test database altogether and use the existing one,
+            # you might need to configure it differently or ensure the user has create DB permissions.
+            # For now, 'MIRROR': 'default' is a common approach to reuse connection settings.
+            # If the issue persists, you might need to explicitly set 'CREATE_DB': False if supported by the backend,
+            # or ensure the user has permissions to create databases.
+        }
     }
 }
 
