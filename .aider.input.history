@@ -385,3 +385,163 @@
 
 # 2025-11-07 12:42:33.632881
 +y
+
+# 2025-11-24 12:39:39.203781
++Add InvestorProfile model linked to User for user_type='investor' (fields: fund name, stages, ticket size, therapeutic areas, geography).
+
+# 2025-11-24 12:40:26.326296
++Ensure the code would pass these tests: Test:
++Create an investor user in Django admin.
++Fill in their InvestorProfile in the UI, save, and verify data appears correctly on reload.
++
+
+# 2025-11-24 12:42:22.076393
++Now add these tests and make sure it matches the rest of the tests. look in F25_discovery under the tests folder. These are the tests: Test:
++Create an investor user in Django admin.
++Fill in their InvestorProfile in the UI, save, and verify data appears correctly on reload.
++
+
+# 2025-11-24 12:43:56.342420
++How to run the tests
+
+# 2025-11-24 12:44:23.989729
++How to run just the test you made
+
+# 2025-11-24 12:44:54.340585
++Give me the command to run the test
+
+# 2025-11-24 12:46:08.454091
++Got this output when trying to run the test: raceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 235, in get_model
++    return self.models[model_name.lower()]
++           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
++KeyError: 'user'
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\contrib\auth\__init__.py", line 283, in get_user_model
++    return django_apps.get_model(settings.AUTH_USER_MODEL, require_ready=False)
++           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\registry.py", line 213, in get_model
++    return app_config.get_model(model_name, require_ready=require_ready)
++           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 237, in get_model
++    raise LookupError(
++        "App '%s' doesn't have a '%s' model." % (self.label, model_name)
++    )
++LookupError: App 'accounts' doesn't have a 'User' model.
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\manage.py", line 22, in <module>
++    main()
++    ~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\manage.py", line 18, in main
++    execute_from_command_line(sys.argv)
++    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\core\management\__init__.py", line 442, in execute_from_command_line
++    utility.execute()
++    ~~~~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\core\management\__init__.py", line 416, in execute
++    django.setup()
++    ~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\__init__.py", line 24, in setup
++    apps.populate(settings.INSTALLED_APPS)
++    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\registry.py", line 116, in populate
++    app_config.import_models()
++    ~~~~~~~~~~~~~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 269, in import_models
++    self.models_module = import_module(models_module_name)
++                         ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
++  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\importlib\__init__.py", line 88, in import_module
++    return _bootstrap._gcd_import(name[level:], package, level)
++           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
++  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
++  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
++  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
++  File "<frozen importlib._bootstrap_external>", line 1027, in exec_module
++  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\accounts\models.py", line 4, in <module>
++    from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\contrib\auth\forms.py", line 20, in <module>
++    UserModel = get_user_model()
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\contrib\auth\__init__.py", line 289, in get_user_model
++    raise ImproperlyConfigured(
++    ...<2 lines>...
++    )
++django.core.exceptions.ImproperlyConfigured: AUTH_USER_MODEL refers to model 'accounts.User' that has not been installed
+
+# 2025-11-24 12:47:02.636726
++Traceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 235, in get_model
++    return self.models[model_name.lower()]
++           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
++KeyError: 'user'
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\contrib\auth\__init__.py", line 283, in get_user_model
++    return django_apps.get_model(settings.AUTH_USER_MODEL, require_ready=False)
++           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\registry.py", line 213, in get_model
++    return app_config.get_model(model_name, require_ready=require_ready)
++           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 237, in get_model
++    raise LookupError(
++        "App '%s' doesn't have a '%s' model." % (self.label, model_name)
++    )
++LookupError: App 'accounts' doesn't have a 'User' model.
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\manage.py", line 22, in <module>
++    main()
++    ~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\manage.py", line 18, in main
++    execute_from_command_line(sys.argv)
++    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\core\management\__init__.py", line 442, in execute_from_command_line
++    utility.execute()
++    ~~~~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\core\management\__init__.py", line 416, in execute
++    django.setup()
++    ~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\__init__.py", line 24, in setup
++    apps.populate(settings.INSTALLED_APPS)
++    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\registry.py", line 116, in populate
++    app_config.import_models()
++    ~~~~~~~~~~~~~~~~~~~~~~~~^^
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\apps\config.py", line 269, in import_models
++    self.models_module = import_module(models_module_name)
++                         ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
++  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\importlib\__init__.py", line 88, in import_module
++    return _bootstrap._gcd_import(name[level:], package, level)
++           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
++  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
++  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
++  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
++  File "<frozen importlib._bootstrap_external>", line 1027, in exec_module
++  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\accounts\models.py", line 6, in <module>
++    User = get_user_model()
++  File "C:\Users\paulf\OneDrive\Desktop\Classes - 2025\CSCI - 340\RepLocation10-22-25\f25_discovery\venv\Lib\site-packages\django\contrib\auth\__init__.py", line 289, in get_user_model
++    raise ImproperlyConfigured(
++    ...<2 lines>...
++    )
++django.core.exceptions.ImproperlyConfigured: AUTH_USER_MODEL refers to model 'accounts.User' that has not been installed
+
+# 2025-11-24 12:47:43.077933
++Run the tests yourself and fix up the code if any issues are found
+
+# 2025-11-24 12:48:27.475396
++Found 4 test(s).
++Creating test database for alias 'default'...
++Got an error creating the test database: permission denied to create database
