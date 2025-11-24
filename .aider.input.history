@@ -597,3 +597,31 @@
 
 # 2025-11-24 12:48:50.709470
 +Y
+
+# 2025-11-24 12:59:51.374375
++ Add a TTOProfile model linked onetoone with User for user_type='university' (fields: institution name, office name, country, therapeutic focus tags, TRL range interest, etc.).
++ Test:
++Create a User with user_type='university' in the shell and a TTOProfile.
++Confirm you can query user.ttoprofile and see all fields persisted correctly.
++
+
+# 2025-11-24 13:00:27.780669
++Y
+
+# 2025-11-24 13:00:27.791904
++/run python manage.py makemigrations accounts
+
+# 2025-11-24 13:00:27.791904
++/run python manage.py makemigrations accounts
+
+# 2025-11-24 13:00:29.786512
++/run python manage.py migrate
+
+# 2025-11-24 13:00:29.786512
++/run python manage.py migrate
+
+# 2025-11-24 13:00:34.260190
++/run python manage.py shell
+
+# 2025-11-24 13:00:34.260190
++/run python manage.py shell
