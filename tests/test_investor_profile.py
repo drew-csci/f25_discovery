@@ -34,6 +34,13 @@ class InvestorProfileAdminTest(TestCase):
         # Ensure InvestorProfile is created for the investor user
         InvestorProfile.objects.create(user=self.investor_user)
 
+    def tearDown(self):
+        # Clean up users created in setUp to prevent duplicate key errors on subsequent test runs
+        User.objects.filter(email__in=['admin@example.com', 'investor@example.com', 'newinvestor@example.com']).delete()
+        # Also clean up any created InvestorProfiles
+        InvestorProfile.objects.filter(user__email__in=['admin@example.com', 'investor@example.com', 'newinvestor@example.com']).delete()
+
+
     def test_investor_profile_inline_in_admin(self):
         """Test that InvestorProfile is available as an inline in UserAdmin."""
         self.assertIn(InvestorProfileInline, self.user_admin.inlines)
@@ -87,6 +94,13 @@ class InvestorProfileUITest(TestCase):
             therapeutic_areas='Oncology, Neurology',
             geography='North America'
         )
+
+    def tearDown(self):
+        # Clean up users created in setUp to prevent duplicate key errors on subsequent test runs
+        User.objects.filter(email='investor@example.com').delete()
+        # Also clean up any created InvestorProfiles
+        InvestorProfile.objects.filter(user__email='investor@example.com').delete()
+
 
     def test_fill_and_save_investor_profile_ui(self):
         """Test filling and saving investor profile data through the UI."""

@@ -74,11 +74,9 @@ DATABASES = {
         'TEST': {
             'NAME': os.getenv('DB_TEST_NAME', 'test_discovery_db'), # Optional: specify a different name for test DB
             'MIRROR': 'default', # This tells Django to use the 'default' database settings for tests
-            # If you want to avoid creating a test database altogether and use the existing one,
-            # you might need to configure it differently or ensure the user has create DB permissions.
-            # For now, 'MIRROR': 'default' is a common approach to reuse connection settings.
-            # If the issue persists, you might need to explicitly set 'CREATE_DB': False if supported by the backend,
-            # or ensure the user has permissions to create databases.
+            # Ensure migrations are applied to the test database.
+            # Django's test runner usually handles this automatically when TEST['MIRROR'] is set,
+            # but if issues persist, manual intervention might be needed depending on the setup.
         }
     }
 }
