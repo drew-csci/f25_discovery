@@ -1,19 +1,22 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, TransactionTestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.contrib.admin.sites import AdminSite
 from accounts.models import InvestorProfile
 from accounts.admin import InvestorProfileInline, UserAdmin
+from django.core.management import call_command
 
 # Use get_user_model() to ensure we are using the custom user model
 User = get_user_model()
 
-class InvestorProfileAdminTest(TestCase):
+class InvestorProfileAdminTest(TransactionTestCase): # Use TransactionTestCase for better isolation
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Apply migrations before any tests run in this class
+        call_command('migrate', verbosity=0, interactive=False)
+
         # Create admin user once for the class to avoid duplicate key errors
-        # Ensure unique usernames if they are not email-based by default
         try:
             cls.admin_user = User.objects.create_superuser(
                 email='admin@example.com',
@@ -88,7 +91,7 @@ class InvestorProfileAdminTest(TestCase):
         new_investor = User.objects.get(email='newinvestor@example.com')
         self.assertTrue(InvestorProfile.objects.filter(user=new_investor).exists())
 
-class InvestorProfileUITest(TestCase):
+class InvestorProfileUITest(TransactionTestCase): # Use TransactionTestCase for better isolation
     def setUp(self):
         self.client = Client()
         # Create an investor user
