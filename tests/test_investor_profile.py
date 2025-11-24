@@ -5,6 +5,7 @@ from django.contrib.admin.sites import AdminSite
 from accounts.models import InvestorProfile
 from accounts.admin import InvestorProfileInline, UserAdmin
 
+# Use get_user_model() to ensure we are using the custom user model
 User = get_user_model()
 
 class InvestorProfileAdminTest(TestCase):
@@ -28,6 +29,7 @@ class InvestorProfileAdminTest(TestCase):
             user_type=User.UserType.INVESTOR
         )
         # Ensure InvestorProfile is created for the investor user
+        # Use the custom user model instance
         InvestorProfile.objects.create(user=self.investor_user)
 
     def test_investor_profile_inline_in_admin(self):
@@ -147,4 +149,3 @@ class InvestorProfileUITest(TestCase):
         self.assertContains(response_reload, '$10M+')
         self.assertContains(response_reload, 'Dermatology')
         self.assertContains(response_reload, 'Asia')
-
