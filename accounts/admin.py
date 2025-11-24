@@ -42,22 +42,13 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
     def save_model(self, request, obj, form, change):
-        # Set username to email if it's a new user and username is not provided
         if not obj.pk and not obj.username:
             obj.username = obj.email
         super().save_model(request, obj, form, change)
 
     def save_formset(self, request, form, formset, change):
-        """
-        Ensure that the user_type is correctly handled when saving formsets,
-        especially for inline profiles.
-        """
-        # This is a simplified approach. A more robust solution might involve
-        # checking the formset's model and user_type before saving.
         super().save_formset(request, form, formset, change)
 
-# Register the profile models directly if you don't want them as inlines
-# or if you want them to be managed separately.
 admin.site.register(InvestorProfile)
 admin.site.register(CompanyProfile)
 admin.site.register(UniversityProfile)

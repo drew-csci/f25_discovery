@@ -18,11 +18,10 @@ class User(AbstractUser):
         default=UserType.UNIVERSITY,
     )
     email = models.EmailField(unique=True)
-    # Add is_email_verified field with a default value
     is_email_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # keep username for admin compatibility
+    REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
         if not self.username:
@@ -49,7 +48,6 @@ class CompanyProfile(models.Model):
     user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='company_profile')
     company_name = models.CharField(max_length=255)
     industry = models.CharField(max_length=255)
-    # Add other company-specific fields as needed
 
     def __str__(self):
         return f"Company Profile for {self.company_name}"
@@ -57,7 +55,6 @@ class CompanyProfile(models.Model):
 class UniversityProfile(models.Model):
     user = models.OneToOneField(get_custom_user_model(), on_delete=models.CASCADE, related_name='university_profile')
     university_name = models.CharField(max_length=255)
-    # Add other university-specific fields as needed
 
     def __str__(self):
         return f"University Profile for {self.university_name}"

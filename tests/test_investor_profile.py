@@ -9,37 +9,37 @@ from accounts.admin import InvestorProfileInline, UserAdmin
 User = get_user_model()
 
 class InvestorProfileAdminTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Create admin user once for the class to avoid duplicate key errors
+        cls.admin_user = User.objects.create_superuser(
+            email='admin@example.com',
+            username='admin',
+            password='password123',
+            is_email_verified=True
+        )
+        # Create an investor user for the class
+        cls.investor_user_for_class = User.objects.create_user(
+            email='investor_class@example.com',
+            username='investor_class',
+            password='password123',
+            user_type=User.UserType.INVESTOR,
+            is_email_verified=True
+        )
+        InvestorProfile.objects.create(user=cls.investor_user_for_class)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Clean up users created in setUpClass
+        User.objects.filter(email__in=['admin@example.com', 'investor_class@example.com', 'newinvestor@example.com']).delete()
+        InvestorProfile.objects.filter(user__email__in=['admin@example.com', 'investor_class@example.com', 'newinvestor@example.com']).delete()
+        super().tearDownClass()
+
     def setUp(self):
         self.client = Client()
         self.admin_site = AdminSite()
         self.user_admin = UserAdmin(User, self.admin_site)
-
-        # Create an admin user
-        # Explicitly set is_email_verified to True or False as it's a not-null field
-        self.admin_user = User.objects.create_superuser(
-            email='admin@example.com',
-            username='admin',
-            password='password123',
-            is_email_verified=True # Explicitly set
-        )
-
-        # Create an investor user
-        self.investor_user = User.objects.create_user(
-            email='investor@example.com',
-            username='investor',
-            password='password123',
-            user_type=User.UserType.INVESTOR,
-            is_email_verified=True # Explicitly set
-        )
-        # Ensure InvestorProfile is created for the investor user
-        InvestorProfile.objects.create(user=self.investor_user)
-
-    def tearDown(self):
-        # Clean up users created in setUp to prevent duplicate key errors on subsequent test runs
-        User.objects.filter(email__in=['admin@example.com', 'investor@example.com', 'newinvestor@example.com']).delete()
-        # Also clean up any created InvestorProfiles
-        InvestorProfile.objects.filter(user__email__in=['admin@example.com', 'investor@example.com', 'newinvestor@example.com']).delete()
-
 
     def test_investor_profile_inline_in_admin(self):
         """Test that InvestorProfile is available as an inline in UserAdmin."""
@@ -49,10 +49,8 @@ class InvestorProfileAdminTest(TestCase):
         """Test creating an investor user through the Django admin interface."""
         self.client.login(email='admin@example.com', password='password123')
         
-        # URL for adding a new user
         add_user_url = reverse('admin:accounts_user_add')
         
-        # Data for creating a new investor user
         user_data = {
             'email': 'newinvestor@example.com',
             'username': 'newinvestor',
@@ -60,17 +58,15 @@ class InvestorProfileAdminTest(TestCase):
             'last_name': 'Investor',
             'user_type': User.UserType.INVESTOR,
             'password': 'newpassword123',
-            'password2': 'newpassword123', # For password confirmation
-            'is_email_verified': True # Explicitly set for the new user creation
+            'password2': 'newpassword123',
+            'is_email_verified': True
         }
         
-        # Post data to create the user
         response = self.client.post(add_user_url, user_data, follow=True)
         
         self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.filter(email='newinvestor@example.com').exists())
         
-        # Check if the InvestorProfile was also created
         new_investor = User.objects.get(email='newinvestor@example.com')
         self.assertTrue(InvestorProfile.objects.filter(user=new_investor).exists())
 
@@ -83,7 +79,7 @@ class InvestorProfileUITest(TestCase):
             username='investor',
             password='password123',
             user_type=User.UserType.INVESTOR,
-            is_email_verified=True # Explicitly set
+            is_email_verified=True
         )
         # Ensure InvestorProfile is created for the investor user
         self.investor_profile = InvestorProfile.objects.create(
@@ -97,8 +93,8 @@ class InvestorProfileUITest(TestCase):
 
     def tearDown(self):
         # Clean up users created in setUp to prevent duplicate key errors on subsequent test runs
+        # This is crucial for TestCase as setUp runs before each test.
         User.objects.filter(email='investor@example.com').delete()
-        # Also clean up any created InvestorProfiles
         InvestorProfile.objects.filter(user__email='investor@example.com').delete()
 
 
@@ -106,10 +102,8 @@ class InvestorProfileUITest(TestCase):
         """Test filling and saving investor profile data through the UI."""
         self.client.login(email='investor@example.com', password='password123')
         
-        # URL for the investor profile page
         profile_url = reverse('investor_profile')
         
-        # Data to update the profile
         updated_data = {
             'fund_name': 'Updated Test Fund',
             'stages': 'Series B, C',
@@ -118,13 +112,11 @@ class InvestorProfileUITest(TestCase):
             'geography': 'Europe'
         }
         
-        # POST request to update the profile
         response = self.client.post(profile_url, updated_data)
         
-        self.assertEqual(response.status_code, 302) # Should redirect after successful save
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, profile_url)
         
-        # Verify data was saved correctly by fetching the profile again
         self.investor_user.refresh_from_db()
         updated_profile = InvestorProfile.objects.get(user=self.investor_user)
         
@@ -139,7 +131,6 @@ class InvestorProfileUITest(TestCase):
         self.client.login(email='investor@example.com', password='password123')
         profile_url = reverse('investor_profile')
         
-        # First, ensure the data is there initially
         response_get = self.client.get(profile_url)
         self.assertEqual(response_get.status_code, 200)
         self.assertContains(response_get, 'Test Fund')
@@ -148,7 +139,6 @@ class InvestorProfileUITest(TestCase):
         self.assertContains(response_get, 'Oncology, Neurology')
         self.assertContains(response_get, 'North America')
 
-        # Now, update the data
         updated_data = {
             'fund_name': 'Reload Test Fund',
             'stages': 'Series B',
@@ -157,9 +147,8 @@ class InvestorProfileUITest(TestCase):
             'geography': 'Asia'
         }
         response_post = self.client.post(profile_url, updated_data)
-        self.assertEqual(response_post.status_code, 302) # Redirects after POST
+        self.assertEqual(response_post.status_code, 302)
 
-        # Reload the page and verify the updated data is displayed
         response_reload = self.client.get(profile_url)
         self.assertEqual(response_reload.status_code, 200)
         self.assertContains(response_reload, 'Reload Test Fund')

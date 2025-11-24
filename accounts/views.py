@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView, CreateView, View
+from django.views.generic import FormView, View
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView, LogoutView as BaseLogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,23 +13,19 @@ from .models import User, InvestorProfile
 class RegisterView(FormView):
     template_name = 'accounts/register.html'
     form_class = UserRegistrationForm
-    success_url = reverse_lazy('login') # Redirect to login after registration
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         user = form.save()
         user_type = form.cleaned_data.get('user_type')
 
         if user_type == User.UserType.INVESTOR:
-            # Create an InvestorProfile for the new investor user
-            # Ensure profile is created only if it doesn't exist
             if not hasattr(user, 'investor_profile'):
                 InvestorProfile.objects.create(user=user)
             messages.success(self.request, f"Investor account created successfully. Please log in.")
         elif user_type == User.UserType.COMPANY:
-            # Handle company profile creation if needed
             pass
         elif user_type == User.UserType.UNIVERSITY:
-            # Handle university profile creation if needed
             pass
 
         return super().form_valid(form)
@@ -40,11 +36,9 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        # Redirect investors to their profile page after login
         if self.request.user.user_type == User.UserType.INVESTOR:
             return reverse_lazy('investor_profile')
-        # Default redirect for other user types
-        return reverse_lazy('screen1') # Or wherever you want to redirect
+        return reverse_lazy('screen1')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,7 +46,7 @@ class CustomLoginView(LoginView):
         return context
 
 class LogoutView(BaseLogoutView):
-    next_page = reverse_lazy('login') # Redirect to login page after logout
+    next_page = reverse_lazy('login')
 
 class InvestorProfileView(LoginRequiredMixin, View):
     template_name = 'accounts/investor_profile.html'
@@ -65,9 +59,8 @@ class InvestorProfileView(LoginRequiredMixin, View):
             profile = user.investor_profile
             form = self.form_class(instance=profile)
         except InvestorProfile.DoesNotExist:
-            # If profile does not exist, create a form for a new profile
             form = self.form_class()
-            profile = None # Explicitly set profile to None
+            profile = None
 
         context = {
             'profile': profile,
@@ -78,7 +71,7 @@ class InvestorProfileView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        profile = None # Initialize profile to None
+        profile = None
         try:
             profile = user.investor_profile
             form = self.form_class(request.POST, instance=profile)
@@ -93,9 +86,8 @@ class InvestorProfileView(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse_lazy('investor_profile'))
         else:
             messages.error(request, "Please correct the errors below.")
-            # Re-render the form with errors, ensuring 'profile' is correctly set
             context = {
-                'profile': profile, # Use the potentially None profile object
+                'profile': profile,
                 'form': form,
                 'user': user,
             }
