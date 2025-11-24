@@ -3,13 +3,16 @@
 ## 🧰 Setup Instructions
 
 ### 1) Create and activate a virtual environment
+
 **Windows**
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
 **macOS / Linux**
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -18,11 +21,13 @@ source venv/bin/activate
 ---
 
 ### 2) Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 If `requirements.txt` is missing or needs updating:
+
 ```bash
 pip freeze > requirements.txt
 ```
@@ -30,6 +35,7 @@ pip freeze > requirements.txt
 ---
 
 ### 3) Configure environment variables -- THIS HAS BEEN DONE ALREADY
+
 Create a `.env` file in the project root (same folder as `manage.py`) with the Postgres settings below. The host value mirrors the original project’s remote DB host.
 
 ```env
@@ -49,7 +55,8 @@ ALLOWED_HOSTS=127.0.0.1,localhost
 
 ---
 
-### 4) Apply migrations -- THIS HAS BEEN DONE ALREADY 
+### 4) Apply migrations -- THIS HAS BEEN DONE ALREADY
+
 ```bash
 python manage.py migrate
 ```
@@ -61,17 +68,23 @@ If you’re developing locally and using the remote DB, make sure your network a
 ### 5) Create users
 
 #### a) Create the admin (superuser) -- THIS HAS BEEN DONE ALREADY
+
 Run:
+
 ```bash
 python manage.py createsuperuser --email admin_disco@drew.edu --username admin
 ```
+
 When prompted, enter the password of your choice, for example: **`Discovery1!`**
 
 #### b) Seed the three role accounts -- THIS HAS BEEN DONE ALREADY
+
 From the Django shell:
+
 ```bash
 python manage.py shell
 ```
+
 ```python
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -99,18 +112,20 @@ for email, role in spec:
 ---
 
 ### 6) Start the development server
+
 ```bash
 python manage.py runserver
 ```
+
 Open: **http://127.0.0.1:8000/**
 
 ---
 
 ## 👤 Demo Accounts
 
-| Role       | Email                  | Password       |
-|------------|------------------------|----------------|
-| University | `university@drew.edu` | `c` |
+| Role       | Email                 | Password       |
+| ---------- | --------------------- | -------------- |
+| University | `university@drew.edu` | `ChangeMe123!` |
 | Company    | `company1@drew.edu`   | `ChangeMe123!` |
 | Investor   | `investor@drew.edu`   | `ChangeMe123!` |
 
@@ -122,14 +137,16 @@ Open: **http://127.0.0.1:8000/**
 
 Admin site: **http://127.0.0.1:8000/admin**
 
-**Superuser (created in Step 5a)**  
-- **Email:** `admin_disco@drew.edu`  
-- **Username:** `admin`  
-- **Password:** `Discovery1!` *(you set this at the prompt)*
+**Superuser (created in Step 5a)**
+
+- **Email:** `admin_disco@drew.edu`
+- **Username:** `admin`
+- **Password:** `Discovery1!` _(you set this at the prompt)_
 
 ---
 
 ## 💡 Notes & Tips
+
 - Always activate your virtual environment before running commands.
 - Stop the dev server with **Ctrl+C**.
 - If you add packages: `pip freeze > requirements.txt` to update.

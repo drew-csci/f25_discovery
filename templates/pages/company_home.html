@@ -4,9 +4,9 @@
 {% block content %}
 <div class="company-home-page p-6">
     <!-- Hero Section -->
-    <div class="hero bg-indigo-700 text-white p-8 rounded-lg mb-8">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold mb-2">Welcome, {{ request.user.username }}!</h1>
-        <p class="text-xl">Discover student projects and research collaborations.</p>
+        <p class="text-xl muted">Discover student projects and research collaborations.</p>
     </div>
 
     <!-- Quick Action Cards -->
@@ -28,14 +28,17 @@
     <!-- Search and Filter Bar -->
     <div class="search-filter-bar bg-white p-6 rounded-lg shadow-md mb-8">
         <form method="GET" action="{% url 'company_home' %}" class="flex flex-col md:flex-row gap-4">
-            <input type="text" name="q" placeholder="Search projects by title or description..."
+            <label for="q_id" class="sr-only">Search projects by title or description</label>
+            <input type="text" name="q" id="q_id" placeholder="Search projects by title or description..."
                    value="{{ current_query }}"
                    class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-            <select name="field"
+            <label for="field_id" class="sr-only">Filter by field</label>
+            <select name="field" id="field_id"
                     class="p-3 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="" {% if not current_field %}selected{% endif %}>All Fields</option>
                 {% for field in available_fields %}
                     <option value="{{ field }}" {% if field == current_field %}selected{% endif %}>
-                        {% if field == "All" %}All Fields{% else %}{{ field }}{% endif %}
+                        {{ field }}
                     </option>
                 {% endfor %}
             </select>

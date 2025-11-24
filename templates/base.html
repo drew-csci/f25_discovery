@@ -1,72 +1,77 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <title>Discovery Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  <script src="https://cdn.tailwindcss.com"></script>
-  {% block styles %}{% endblock %}
-</head>
-<body>
-  {% block body %}
-    {% block header %}
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="{% url 'welcome' %}">Discovery&nbsp;Hub</a>
-      <nav>
-        <ul class="nav">
-          {% if user.is_authenticated %}
-            <li><a href="{% url 'screen1' %}">Screen&nbsp;1</a></li>
-            <li><a href="{% url 'screen2' %}">Screen&nbsp;2</a></li>
-            <li><a href="{% url 'screen3' %}">Screen&nbsp;3</a></li>
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Discovery Hub{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block styles %}{% endblock %}
+    {% comment %} Block for additional styles injected by child templates {% endcomment %}
+    {% block extra_head_styles %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    {% block body %} {% block header %}
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'welcome' %}">Discovery&nbsp;Hub</a>
+        <nav>
+          <ul class="nav">
+            {% if user.is_authenticated %}
+
             <li><a href="{% url 'notifications' %}">Notifications</a></li>
             {% if user.user_type == 'company' %}
-              <li><a href="{% url 'company_home' %}">Company&nbsp;Home</a></li>
+            <li><a href="{% url 'company_home' %}">Company&nbsp;Home</a></li>
+            {% elif user.user_type == 'university' %}
+            <li>
+              <a href="{% url 'university_home' %}">University&nbsp;Home</a>
+            </li>
             {% else %}
-              <li><a href="{% url 'screen1' %}">Home Page</a></li>
-              <li><a href="{% url 'screen2' %}">View Research</a></li>
-              <li><a href="{% url 'screen3' %}">Match with others</a></li>
+            <li><a href="{% url 'screen1' %}">Home Page</a></li>
+            <li><a href="{% url 'screen2' %}">View Research</a></li>
+            <li><a href="{% url 'screen3' %}">Match with others</a></li>
             {% endif %}
             <li class="divider"></li>
             <li class="muted">Hello,&nbsp;{{ user.display_name }}!</li>
             <li>
-              <form method="post" action="{% url 'logout' %}" style="display:inline">
+              <form
+                method="post"
+                action="{% url 'logout' %}"
+                style="display: inline"
+              >
                 {% csrf_token %}
                 <button type="submit" class="btn">Log out</button>
               </form>
             </li>
-          {% else %}
+            {% else %}
             <li><a href="{% url 'login' %}">Log in</a></li>
             <li><a href="{% url 'register' %}">Create account</a></li>
-          {% endif %}
-        </ul>
-      </nav>
-    </div>
-  </header>
-  {% endblock header %}
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    {% endblock header %}
 
-  <div class="container">
-    <main>
-      {% if messages %}
+    <div class="container">
+      <main>
+        {% if messages %}
         <ul class="messages">
           {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
+          <li class="{{ message.tags }}">{{ message }}</li>
           {% endfor %}
         </ul>
-      {% endif %}
-      {% block content %}{% endblock %}
-    </main>
-  </div>
-
-  {% block footer %}
-  <footer class="site-footer">
-    <div class="container">
-      <small>&copy; {% now "Y" %} Discovery Hub</small>
+        {% endif %} {% block content %}{% endblock %}
+      </main>
     </div>
-  </footer>
-  {% endblock footer %}
-  {% endblock body %}
-</body>
+
+    {% block footer %}
+    <footer class="site-footer">
+      <div class="container">
+        <small>&copy; {% now "Y" %} Discovery Hub</small>
+      </div>
+    </footer>
+    {% endblock footer %} {% endblock body %}
+  </body>
 </html>
