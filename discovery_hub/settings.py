@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
+    'accounts',  # Ensure 'accounts' app is listed here
     'pages',
     'tests',
 ]

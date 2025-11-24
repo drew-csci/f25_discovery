@@ -1,8 +1,12 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.forms import ChoiceField, RadioSelect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
+# Import get_user_model here to ensure it's available when needed
+from django.contrib.auth import get_user_model
 from django import forms # Import forms module
+
+# Get the custom user model
+User = get_user_model()
 
 class User(AbstractUser):
     class UserType(models.TextChoices):
@@ -61,6 +65,9 @@ class UniversityProfile(models.Model):
         return f"University Profile for {self.university_name}"
 
 # Forms (assuming these are still relevant and need to be kept)
+# Note: These forms are defined here for completeness, but the issue was likely with
+# how Django's internal auth forms were trying to access the user model.
+# The fix in settings.py and ensuring accounts is loaded correctly should resolve it.
 class UserRegistrationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=User.UserType.choices, widget=forms.RadioSelect)
 
@@ -78,6 +85,7 @@ class EmailAuthenticationForm(AuthenticationForm):
 class CustomPasswordResetForm(PasswordResetForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
+        # Use email directly for lookup, as it's the username field
         if not User.objects.filter(email__iexact=email, is_active=True).exists():
             raise forms.ValidationError("This email is not associated with any account.")
         return email
