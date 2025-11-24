@@ -21,7 +21,9 @@ class RegisterView(FormView):
 
         if user_type == User.UserType.INVESTOR:
             # Create an InvestorProfile for the new investor user
-            InvestorProfile.objects.create(user=user)
+            # Ensure profile is created only if it doesn't exist
+            if not hasattr(user, 'investor_profile'):
+                InvestorProfile.objects.create(user=user)
             messages.success(self.request, f"Investor account created successfully. Please log in.")
         elif user_type == User.UserType.COMPANY:
             # Handle company profile creation if needed
@@ -63,8 +65,9 @@ class InvestorProfileView(LoginRequiredMixin, View):
             profile = user.investor_profile
             form = self.form_class(instance=profile)
         except InvestorProfile.DoesNotExist:
+            # If profile does not exist, create a form for a new profile
             form = self.form_class()
-            profile = None
+            profile = None # Explicitly set profile to None
 
         context = {
             'profile': profile,
@@ -75,6 +78,7 @@ class InvestorProfileView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         user = request.user
+        profile = None # Initialize profile to None
         try:
             profile = user.investor_profile
             form = self.form_class(request.POST, instance=profile)
@@ -89,8 +93,9 @@ class InvestorProfileView(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse_lazy('investor_profile'))
         else:
             messages.error(request, "Please correct the errors below.")
+            # Re-render the form with errors, ensuring 'profile' is correctly set
             context = {
-                'profile': profile if 'profile' in locals() else None,
+                'profile': profile, # Use the potentially None profile object
                 'form': form,
                 'user': user,
             }
