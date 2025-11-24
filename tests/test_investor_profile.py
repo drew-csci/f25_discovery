@@ -17,17 +17,19 @@ class InvestorProfileAdminTest(TransactionTestCase):
         try:
             # Apply migrations before any tests run in this class
             call_command('migrate', verbosity=0, interactive=False)
+            cls.migration_failed = False
         except OperationalError as e:
             print(f"Migration failed: {e}")
-            # If migrations fail, we can't proceed with tests that rely on the schema
             cls.migration_failed = True
-        else:
-            cls.migration_failed = False
+        except Exception as e: # Catch other potential errors during migration
+            print(f"An unexpected error occurred during migration: {e}")
+            cls.migration_failed = True
 
+        # If migrations failed, we cannot reliably create users or run tests
         if cls.migration_failed:
-            return # Skip user creation if migrations failed
+            return
 
-        # Create admin user once for the class to avoid duplicate key errors
+        # Create admin user once for the class
         try:
             cls.admin_user = User.objects.create_superuser(
                 email='admin@example.com',
@@ -55,9 +57,6 @@ class InvestorProfileAdminTest(TransactionTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if cls.migration_failed:
-            return # Skip cleanup if migrations failed
-
         # Clean up users created in setUpClass
         if cls.admin_user:
             cls.admin_user.delete()
@@ -116,11 +115,13 @@ class InvestorProfileUITest(TransactionTestCase):
         try:
             # Apply migrations before any tests run in this class
             call_command('migrate', verbosity=0, interactive=False)
+            cls.migration_failed = False
         except OperationalError as e:
             print(f"Migration failed: {e}")
             cls.migration_failed = True
-        else:
-            cls.migration_failed = False
+        except Exception as e: # Catch other potential errors during migration
+            print(f"An unexpected error occurred during migration: {e}")
+            cls.migration_failed = True
 
     def setUp(self):
         self.client = Client()
