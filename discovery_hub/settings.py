@@ -42,14 +42,22 @@ TEMPLATES = [{
 }]
 WSGI_APPLICATION = 'discovery_hub.wsgi.application'
 
+# Database configuration
+# Attempt to get settings from environment variables, with fallbacks.
+DB_NAME = os.getenv('DB_NAME', 'discovery_db')
+DB_USER = os.getenv('DB_USER', 'disco_app')
+DB_PASSWORD = os.getenv('DB_PASSWORD', 'CSCI340Fall2025Disco')
+DB_HOST = os.getenv('DB_HOST', '34.16.174.60') # The host that was causing connection issues
+DB_PORT = os.getenv('DB_PORT', '5432')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME','discovery_db'),
-        'USER': os.getenv('DB_USER','disco_app'),
-        'PASSWORD': os.getenv('DB_PASSWORD','CSCI340Fall2025Disco'),
-        'HOST': os.getenv('DB_HOST','34.16.174.60'),
-        'PORT': int(os.getenv('DB_PORT','5432')),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': int(DB_PORT) if DB_PORT.isdigit() else 5432, # Ensure port is an integer
         'CONN_MAX_AGE': 60,
     }
 }
