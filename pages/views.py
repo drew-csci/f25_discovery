@@ -114,3 +114,132 @@ def company_home(request):
         'available_fields': available_fields,
     }
     return render(request, 'pages/company_home.html', context)
+
+
+@login_required
+def company_profile(request):
+    # Restrict access to only company users
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Redirect if not a company user
+
+    # This is dummy data for now, inspired by LinkedIn company profiles.
+    company_data = {
+        'name': request.user.username.title(),
+        'tagline': 'Innovating for a better future, one line of code at a time.',
+        'about': 'We are a forward-thinking technology company specializing in custom software solutions that drive business growth. Our mission is to empower our clients through innovative technology and expert consulting. We believe in creating partnerships, not just products.',
+        'website': 'https://example.com',
+        'industry': 'Information Technology & Services',
+        'size': '51-200 employees',
+        'headquarters': 'Tech City, Innovation State',
+        'founded': 2010,
+        'specialties': ['Web Development', 'Cloud Computing', 'AI & Machine Learning', 'Enterprise Solutions'],
+        'projects': [
+            {
+                'title': 'AI-Powered Analytics Platform',
+                'duration': '2022 - Present',
+                'description': 'Developed a platform that provides deep insights into customer behavior using machine learning algorithms.'
+            },
+            {
+                'title': 'Global E-commerce Marketplace',
+                'duration': '2020 - 2022',
+                'description': 'Built a scalable and secure marketplace serving millions of users worldwide.'
+            },
+        ],
+        'jobs': [
+            {
+                'title': 'Senior Python Developer',
+                'location': 'Remote',
+                'type': 'Full-time'
+            },
+            {
+                'title': 'Frontend Engineer (React)',
+                'location': 'Tech City Office',
+                'type': 'Full-time'
+            },
+        ]
+    }
+    
+    context = {
+        'company': company_data,
+    }
+    return render(request, 'pages/company_profile.html', context)
+
+
+@login_required
+def investor_profile(request):
+    # Restrict access to only investor users
+    if request.user.user_type != User.UserType.INVESTOR:
+        return redirect('screen1') # Redirect if not an investor user
+
+    # This is dummy data for now, inspired by LinkedIn/AngelList profiles.
+    investor_data = {
+        'name': request.user.display_name,
+        'title': 'Managing Partner',
+        'firm': 'Venture Capital Partners',
+        'location': 'Silicon Valley, CA',
+        'about': 'Seasoned investor with over 15 years of experience in early-stage technology startups. Passionate about helping entrepreneurs build disruptive companies. My focus is on SaaS, FinTech, and AI. Looking to connect with innovative founders who are changing the world.',
+        'focus': {
+            'industries': ['SaaS', 'FinTech', 'Artificial Intelligence', 'HealthTech'],
+            'stage': 'Seed, Series A',
+            'check_size': '$250k - $2M',
+            'geography': 'North America',
+        },
+        'portfolio': [
+            {
+                'company': 'Innovate AI',
+                'industry': 'Artificial Intelligence',
+                'year': '2021',
+                'description': 'A leading platform for developing and deploying machine learning models at scale.'
+            },
+            {
+                'company': 'FinSecure',
+                'industry': 'FinTech',
+                'year': '2019',
+                'description': 'Cybersecurity solutions for financial institutions, acquired by a major bank in 2023.'
+            },
+        ],
+    }
+    
+    context = {
+        'investor': investor_data,
+    }
+    return render(request, 'pages/investor_profile.html', context)
+
+
+@login_required
+def university_profile(request):
+    # Restrict access to only university users
+    if request.user.user_type != User.UserType.UNIVERSITY:
+        return redirect('screen1') # Redirect if not a university user
+
+    # This is dummy data for now.
+    university_data = {
+        'name': request.user.username.title(),
+        'location': 'Innovation City, Knowledge State',
+        'about': 'A leading institution for higher education and research, committed to academic excellence and fostering innovation. We have a rich history of producing leaders and pioneers in various fields.',
+        'website': 'https://university.example.edu',
+        'type': 'Public Research University',
+        'enrollment': '35,000',
+        'founded': 1850,
+        'departments': [
+            'Computer Science', 'Electrical Engineering', 'Biomedical Engineering',
+            'Physics', 'Chemistry', 'Business Administration'
+        ],
+        'research': [
+            {
+                'title': 'Quantum Computing Advancements',
+                'publication': 'Journal of Quantum Information',
+                'summary': 'Breakthroughs in qubit stability and error correction, paving the way for more powerful quantum computers.'
+            },
+            {
+                'title': 'CRISPR-based Gene Therapy for Genetic Disorders',
+                'publication': 'Nature Biotechnology',
+                'summary': 'Developing novel gene-editing techniques to treat inherited diseases with high precision.'
+            },
+        ],
+    }
+    
+    context = {
+        'university': university_data,
+    }
+    return render(request, 'pages/university_profile.html', context)

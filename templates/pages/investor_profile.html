@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="investor-profile-page bg-gray-100 p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="w-32 h-32 rounded-full border-4 border-white bg-gray-200 flex-shrink-0">
+                        <!-- Placeholder for profile picture -->
+                        <img src="https://via.placeholder.com/128" alt="Investor Profile Picture" class="rounded-full">
+                    </div>
+                    <div class="ml-6">
+                        <h1 class="text-3xl font-bold text-gray-800">{{ investor.name }}</h1>
+                        <p class="text-gray-600">{{ investor.title }} at {{ investor.firm }}</p>
+                        <p class="text-sm text-gray-500 mt-1">{{ investor.location }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">About</h2>
+            <p class="text-gray-700 leading-relaxed">
+                {{ investor.about }}
+            </p>
+        </div>
+
+        <!-- Investment Focus Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Investment Focus</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
+                <div><strong>Industries:</strong> {{ investor.focus.industries|join:", " }}</div>
+                <div><strong>Investment Stage:</strong> {{ investor.focus.stage }}</div>
+                <div><strong>Typical Check Size:</strong> {{ investor.focus.check_size }}</div>
+                <div><strong>Geographic Focus:</strong> {{ investor.focus.geography }}</div>
+            </div>
+        </div>
+
+        <!-- Experience Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Portfolio Highlights</h2>
+            <div class="space-y-6">
+                {% for investment in investor.portfolio %}
+                <div class="border-b pb-4 last:border-b-0">
+                    <h3 class="text-xl font-semibold text-gray-800">{{ investment.company }}</h3>
+                    <p class="text-sm text-gray-500 mb-1">{{ investment.industry }} &middot; {{ investment.year }}</p>
+                    <p class="text-gray-700">{{ investment.description }}</p>
+                </div>
+                {% empty %}
+                 <p class="text-gray-600">No portfolio companies to display.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
