@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import User
+from .models import User, TTOProfile
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
@@ -18,3 +18,9 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'user_type', 'is_staff', 'is_active')
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
+
+@admin.register(TTOProfile)
+class TTOProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'institution_name', 'country', 'therapeutic_focus_tags')
+    search_fields = ('institution_name', 'user__email', 'therapeutic_focus_tags')
+    raw_id_fields = ('user',)
