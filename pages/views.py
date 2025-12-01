@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
+import requests # Assuming you'll use requests to call other services
 
 def welcome(request):
     return render(request, 'welcome.html')
@@ -114,3 +115,42 @@ def company_home(request):
         'available_fields': available_fields,
     }
     return render(request, 'pages/company_home.html', context)
+
+@login_required
+def search_discovery(request):
+    """
+    Endpoint to call both patent and publication services and return a combined payload.
+    """
+    patents_data = []
+    publications_data = []
+
+    # --- Call Patent Service ---
+    try:
+        # Replace with the actual URL of your patent service
+        patent_service_url = "http://localhost:8001/api/patents/" # Example URL
+        response_patents = requests.get(patent_service_url)
+        response_patents.raise_for_status() # Raise an exception for bad status codes
+        patents_data = response_patents.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error calling patent service: {e}")
+        # Handle error appropriately, e.g., return an error message or partial data
+
+    # --- Call Publication Service ---
+    try:
+        # Replace with the actual URL of your publication service
+        publication_service_url = "http://localhost:8002/api/publications/" # Example URL
+        response_publications = requests.get(publication_service_url)
+        response_publications.raise_for_status() # Raise an exception for bad status codes
+        publications_data = response_publications.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error calling publication service: {e}")
+        # Handle error appropriately, e.g., return an error message or partial data
+
+    combined_payload = {
+        "patents": patents_data,
+        "publications": publications_data
+    }
+
+    # Assuming you have a template named 'pages/search_results.html' to display the combined results
+    # You might need to create this template.
+    return render(request, 'pages/search_results.html', {'results': combined_payload})
