@@ -8,7 +8,7 @@
 
 ```bash
 python -m venv venv
-c
+venv\Scripts\activate
 ```
 
 **macOS / Linux**
