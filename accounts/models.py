@@ -5,6 +5,7 @@ from django import forms
 
 def get_custom_user_model():
     return get_user_model()
+from django.contrib.postgres.fields import ArrayField
 
 class User(AbstractUser):
     class UserType(models.TextChoices):
@@ -17,6 +18,37 @@ class User(AbstractUser):
         choices=UserType.choices,
         default=UserType.UNIVERSITY,
     )
+
+
+class TTOProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='ttoprofile',
+        limit_choices_to={'user_type': User.UserType.UNIVERSITY}
+    )
+    institution_name = models.CharField(max_length=255, blank=True)
+    office_name = models.CharField(max_length=255, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    therapeutic_focus_tags = ArrayField(
+        models.CharField(max_length=100),
+        blank=True,
+        default=list,
+        help_text="Comma-separated list of therapeutic focus areas (e.g., 'Oncology', 'Cardiology')"
+    )
+    trl_range_interest_min = models.IntegerField(
+        blank=True, null=True,
+        help_text="Minimum Technology Readiness Level (TRL) of interest (1-9)"
+    )
+    trl_range_interest_max = models.IntegerField(
+        blank=True, null=True,
+        help_text="Maximum Technology Readiness Level (TRL) of interest (1-9)"
+    )
+
+    def __str__(self):
+        return f"TTO Profile for {self.user.display_name}"
+
+    user_type = models.CharField(max_length=20, choices=UserType.choices, default=UserType.UNIVERSITY)
     email = models.EmailField(unique=True)
     is_email_verified = models.BooleanField(default=False)
 

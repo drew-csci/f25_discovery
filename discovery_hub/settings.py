@@ -19,6 +19,10 @@ INSTALLED_APPS = [
     'accounts',
     'pages',
     'tests',
+    'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes',
+    'django.contrib.sessions','django.contrib.messages','django.contrib.staticfiles',
+    'django.contrib.postgres', # Required for ArrayField
+    'accounts','pages','tests',
 ]
 
 MIDDLEWARE = [
