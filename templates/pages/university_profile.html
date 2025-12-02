@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="university-profile-page bg-gray-100 p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <div class="p-6">
+                <div class="flex items-end">
+                    <div class="w-32 h-32 rounded-full border-4 border-white bg-gray-200 flex-shrink-0">
+                        <!-- Placeholder for university logo -->
+                        <img src="https://via.placeholder.com/128" alt="University Logo" class="rounded-full">
+                    </div>
+                    <div class="ml-4">
+                        <h1 class="text-3xl font-bold text-gray-800">{{ university.name }}</h1>
+                        <p class="text-gray-600">{{ university.location }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">About</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                {{ university.about }}
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
+                <div><strong>Website:</strong> <a href="{{ university.website }}" class="text-indigo-600 hover:underline">{{ university.website }}</a></div>
+                <div><strong>Type:</strong> {{ university.type }}</div>
+                <div><strong>Enrollment:</strong> {{ university.enrollment }} students</div>
+                <div><strong>Founded:</strong> {{ university.founded }}</div>
+            </div>
+        </div>
+
+        <!-- Departments Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Notable Departments</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-gray-700">
+                {% for department in university.departments %}
+                <span>{{ department }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Featured Research Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Featured Research</h2>
+            <div class="space-y-6">
+                {% for research in university.research %}
+                <div class="border-b pb-4 last:border-b-0">
+                    <h3 class="text-xl font-semibold text-gray-800">{{ research.title }}</h3>
+                    <p class="text-sm text-gray-500 mb-1">Published in: <em>{{ research.publication }}</em></p>
+                    <p class="text-gray-700">{{ research.summary }}</p>
+                </div>
+                {% empty %}
+                 <p class="text-gray-600">No featured research to display.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

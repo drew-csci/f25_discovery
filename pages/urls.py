@@ -11,4 +11,7 @@ urlpatterns = [
     path('company/home/', views.company_home, name='company_home'),
     path('university/home/', views.university_home, name='university_home'),
     path('search/discovery/', views.search_discovery, name='search_discovery'), # New endpoint for combined search
+    path('company/profile/', views.company_profile, name='company_profile'),
+    path('investor/profile/', views.investor_profile, name='investor_profile'),
+    path('university/profile/', views.university_profile, name='university_profile'),
 ]
