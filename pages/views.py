@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
+import requests # Assuming you'll use requests to call other services
 
 def welcome(request):
     return render(request, 'welcome.html')
