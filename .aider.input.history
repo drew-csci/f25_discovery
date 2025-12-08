@@ -576,3 +576,9 @@
 +> omepage then. Put Boxes for recent funding, Other university projects that  
 +> are popular and a searching option for filtering different companies that s 
 +> pend on research patent
+
+# 2025-12-08 12:46:37.980464
++Add a company_about view in pages/views.py and route in pages/urls.py that renders a template pages/company_about.html. The page must show the logged-in company’s display name, a short “Mission” text, a brief description of what problems the company helps solve, and a “Contact” email line. Link to this page from templates/pages/company_home.html by wiring the “Edit Profile” card to {% url 'company_about' %}.
+
+# 2025-12-08 12:49:31.903323
++This test checks access control. It verifies that if a user is logged in but is not a company user (for example, a university user), they are not allowed to see the page and instead are redirected back to the main screen (screen1).
