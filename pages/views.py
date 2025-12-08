@@ -207,6 +207,21 @@ def investor_profile(request):
 
 
 @login_required
+def company_about(request):
+    # Restrict access to only company users
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Redirect if not a company user
+
+    context = {
+        'company_name': request.user.display_name if hasattr(request.user, 'display_name') else request.user.username.title(),
+        'mission': 'Our mission is to empower businesses with innovative technology solutions that drive growth and efficiency.',
+        'problems_solved': 'We help companies overcome challenges in digital transformation, data management, and operational inefficiencies through custom software and strategic consulting.',
+        'contact_email': request.user.email,
+    }
+    return render(request, 'pages/company_about.html', context)
+
+
+@login_required
 def university_profile(request):
     # Restrict access to only university users
     if request.user.user_type != User.UserType.UNIVERSITY:
