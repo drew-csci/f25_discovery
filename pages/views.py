@@ -88,3 +88,20 @@ def company_home(request):
         'available_fields': available_fields,
     }
     return render(request, 'pages/company_home.html', context)
+
+
+@login_required
+def company_about(request):
+    # This view is for the company's "About" page, which can also serve as a profile page.
+    # It's restricted to company users.
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Or some other appropriate page
+
+    # In a real app, this data might come from the company's profile model
+    context = {
+        'company_name': request.user.display_name,
+        'mission': "To foster innovation by connecting with the brightest academic minds.",
+        'problem_solved': "We bridge the gap between academic research and industry application, helping to bring groundbreaking ideas to market.",
+        'contact_email': request.user.email,
+    }
+    return render(request, 'pages/company_about.html', context)

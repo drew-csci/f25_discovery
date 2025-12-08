@@ -10,5 +10,6 @@ urlpatterns = [
     path('screen3/', views.screen3, name='screen3'),
     path('notifications/', views.notifications, name='notifications'),
     path('company/home/', views.company_home, name='company_home'),
+    path('company/about/', views.company_about, name='company_about'),
     path('buggy/', buggy_view.buggy_search, name='buggy_search'),  # <-- add this route
 ]
