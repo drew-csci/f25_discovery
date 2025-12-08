@@ -97,12 +97,15 @@ def company_home(request):
 
     projects = all_projects
     query = request.GET.get('q')
-    field_filter = request.GET.get('field', '')
+    current_field_param = request.GET.get('field', '') # Keep original case for dropdown display
 
+    # Apply search query filter
     if query:
         projects = [p for p in projects if query.lower() in p['title'].lower() or query.lower() in p['description'].lower()]
-    if field_filter:
-        projects = [p for p in projects if p['field'] == field_filter]
+
+    # Apply field filter (case-insensitive)
+    if current_field_param:
+        projects = [p for p in projects if p['field'].lower() == current_field_param.lower()]
 
     # Get all unique fields for the filter dropdown
     available_fields = sorted(list(set([p['field'] for p in all_projects])))
@@ -110,7 +113,7 @@ def company_home(request):
     context = {
         'projects': projects,
         'current_query': query if query else '',
-        'current_field': field_filter,
+        'current_field': current_field_param, # Pass original case for selected attribute comparison
         'available_fields': available_fields,
     }
     return render(request, 'pages/company_home.html', context)
