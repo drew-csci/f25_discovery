@@ -38,7 +38,7 @@ class TTOProfile(models.Model):
     def __str__(self):
         return f"TTO Profile for {self.user.display_name}"
 
-    user_type = models.CharField(max_length=20, choices=UserType.choices, default=UserType.UNIVERSITY)
+    user_type = models.CharField(max_length=20, choices=User.UserType.choices, default=User.UserType.UNIVERSITY)
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = 'email'
