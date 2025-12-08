@@ -1,10 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
-
-# Callable for ArrayField default
-def get_default_array():
-    return []
 
 class User(AbstractUser):
     class UserType(models.TextChoices):
@@ -40,11 +35,10 @@ class TTOProfile(models.Model):
     institution_name = models.CharField(max_length=255, blank=True)
     office_name = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    therapeutic_focus_tags = ArrayField(
-        models.CharField(max_length=100),
+    therapeutic_focus_tags = models.JSONField(
         blank=True,
-        default=get_default_array,
-        help_text="Comma-separated list of therapeutic focus areas (e.g., 'Oncology', 'Cardiology')"
+        default=list, # JSONField handles mutable defaults with a callable internally
+        help_text="List of therapeutic focus areas (e.g., ['Oncology', 'Cardiology'])"
     )
     trl_range_interest_min = models.IntegerField(
         blank=True, null=True,
