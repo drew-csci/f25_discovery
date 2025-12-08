@@ -567,3 +567,18 @@
 
 # 2025-11-09 16:15:26.520648
 +n
+
+# 2025-12-08 12:43:56.473043
++Add a company_about view in pages/views.py and route in pages/urls.py that renders a template pages/company_about.html. The page must show the logged-in company’s display name, a short “Mission” text, a brief description of what problems the company helps solve, and a “Contact” email line. Link to this page from templates/pages/company_home.html by wiring the “Edit Profile” card to {% url 'company_about' %}.
+
+# 2025-12-08 12:45:56.876976
++can you write a test file for what you just coded?
+
+# 2025-12-08 12:49:07.474954
++/run python manage.py test tests/test_company_about.py
+
+# 2025-12-08 12:49:07.475388
++/run python manage.py test tests/test_company_about.py
+
+# 2025-12-08 12:49:34.563770
++can you solve the RuntimeError: One of the test labels is a path to a file: 'tests/test_company_about.py', which is not supported. Use a dotted module name or path to a directory instead.
