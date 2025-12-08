@@ -30,6 +30,7 @@ class CompanyHomeTests(TestCase):
             user_type=User.UserType.UNIVERSITY # Use a valid UserType for non-company user
         )
         self.company_home_url = reverse('company_home')
+        self.company_about_url = reverse('company_about')
 
     def test_company_home_access_control(self):
         """
@@ -62,6 +63,39 @@ class CompanyHomeTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/company_home.html')
         self.client.logout()
+
+    def test_company_about_access_control(self):
+        """
+        Confirms that only authenticated company users can view /company/about/,
+        while other user types or unauthenticated visitors are redirected to login or screen1.
+        """
+        # Unauthenticated user should be redirected to login
+        response = self.client.get(self.company_about_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('login'), response.url)
+
+        # University user (non-company) should be redirected to screen1
+        self.client.login(email='university@example.com', password='password123')
+        response = self.client.get(self.company_about_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('screen1'), response.url)
+        self.client.logout()
+
+        # Investor user (non-company) should be redirected to screen1
+        self.client.login(email='investor@example.com', password='password123')
+        response = self.client.get(self.company_about_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('screen1'), response.url)
+        self.client.logout()
+
+        # Authenticated company user should access the page successfully
+        self.client.login(email='company@example.com', password='password123')
+        response = self.client.get(self.company_about_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/company_about.html')
+        self.assertContains(response, 'Innovative Solutions Inc.') # Check for context data
+        self.client.logout()
+
 
     def test_company_home_template_rendering(self):
         """

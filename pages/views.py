@@ -1,9 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from accounts.models import User # Import User model for UserType access
 
+@login_required
 def company_home(request):
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1')
     return render(request, 'pages/company_home.html')
 
+@login_required
 def company_about(request):
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1')
+    
     # Mock data for demonstration. In a real application, this data would be fetched dynamically
     # based on the logged-in user/company profile.
     context = {
