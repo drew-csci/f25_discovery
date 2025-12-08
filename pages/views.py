@@ -243,3 +243,22 @@ def university_profile(request):
         'university': university_data,
     }
     return render(request, 'pages/university_profile.html', context)
+
+
+@login_required
+def company_about(request):
+    # Restrict access to only company users
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Redirect if not a company user
+
+    company_data = {
+        'display_name': request.user.display_name,
+        'mission': 'To innovate and deliver cutting-edge software solutions that empower businesses to achieve their full potential.',
+        'problems_solved': 'We help companies overcome operational inefficiencies, enhance customer engagement, and scale their digital infrastructure by providing bespoke software development and strategic technology consulting.',
+        'contact_email': request.user.email,
+    }
+
+    context = {
+        'company': company_data,
+    }
+    return render(request, 'pages/company_about.html', context)
