@@ -5,9 +5,12 @@ __pycache__/
 *.pyd
 .env
 .aider
+.aider.chat.history.md
 venv/
 ENV/
 env/
 .DS_Store
 .aider*
 .aider.tags.cache.v4/
+.aider.chat.history.md
+.aider.input.history

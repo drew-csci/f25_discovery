@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from .forms import UserRegistrationForm, EmailAuthenticationForm
+from accounts.models import User
 
 class RegisterView(FormView):
     template_name = 'accounts/register.html'
@@ -24,9 +25,11 @@ class RegisterView(FormView):
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     authentication_form = EmailAuthenticationForm
-    redirect_authenticated_user = True
+    redirect_authenticated_user = False # Temporarily set to False for debugging
 
     def get_success_url(self):
+        if self.request.user.is_authenticated and self.request.user.user_type == User.UserType.COMPANY:
+            return reverse_lazy('company_home')
         return reverse_lazy('screen1')
 
     def get_context_data(self, **kwargs):
