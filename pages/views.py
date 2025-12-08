@@ -114,3 +114,18 @@ def company_home(request):
         'available_fields': available_fields,
     }
     return render(request, 'pages/company_home.html', context)
+
+
+@login_required
+def company_about(request):
+    # Restrict access to only company users
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Redirect if not a company user
+
+    context = {
+        'company_name': request.user.display_name,
+        'mission_text': 'Our mission is to connect innovative companies with cutting-edge university research and talent.',
+        'problems_solved_text': 'We help companies discover new technologies, find skilled student researchers, and foster collaborations that drive innovation and solve complex industry challenges.',
+        'contact_email': request.user.email,
+    }
+    return render(request, 'pages/company_about.html', context)

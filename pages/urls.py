@@ -9,5 +9,6 @@ urlpatterns = [
     path('notifications/', views.notifications, name='notifications'), # added for notifications page, 
     # URL for the Company Home Page (Dashboard)
     path('company/home/', views.company_home, name='company_home'),
+    path('company/about/', views.company_about, name='company_about'),
     path('university/home/', views.university_home, name='university_home'),
 ]

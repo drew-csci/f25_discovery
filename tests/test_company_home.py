@@ -99,6 +99,21 @@ class CompanyHomeTests(TestCase):
         self.assertContains(response_empty_search, 'No projects found matching your criteria.') # Should be present for empty search
         self.client.logout()
 
+    def test_company_about_access_control(self):
+        # Log in a university user and try to access the company_about page
+        self.client.login(email='university@example.com', password='password123')
+        response = self.client.get(reverse('company_about'))
+        # Should redirect to screen1 as university users cannot access company pages
+        self.assertRedirects(response, reverse('screen1'))
+        self.client.logout()
+
+        # Log in a company user and ensure they can access the company_about page
+        self.client.login(email='company@example.com', password='password123')
+        response = self.client.get(reverse('company_about'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/company_about.html')
+        self.client.logout()
+
     # Note: Search and filter features will require actual Project models and view logic
     # to be fully tested. The 'empty result handling' partially covers this.
     # For a complete test, you would:
