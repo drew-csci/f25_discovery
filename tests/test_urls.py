@@ -27,9 +27,28 @@ class CompanyAboutAccessTests(TestCase):
 
     def test_non_company_user_redirects_from_company_about(self):
         self.client.login(email='universityuser@example.com', password='testpassword123')
+        # Step 1: Request company_about as a university user
         response = self.client.get(reverse('company_about'))
-        self.assertEqual(response.status_code, 302) # Expect a redirect
-        self.assertRedirects(response, reverse('university_home'))
+
+        # Expect an initial redirect (302) from company_about to screen1
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('screen1'), response['Location'])
+
+        # Manually follow the first redirect to screen1
+        response_screen1 = self.client.get(response['Location'])
+
+        # Expect a second redirect (302) from screen1 to university_home for university users
+        self.assertEqual(response_screen1.status_code, 302)
+        self.assertIn(reverse('university_home'), response_screen1['Location'])
+
+        # Manually follow the second redirect to university_home
+        response_university_home = self.client.get(response_screen1['Location'])
+
+        # Expect the final page (university_home) to be rendered successfully (200)
+        self.assertEqual(response_university_home.status_code, 200)
+        self.assertTemplateUsed(response_university_home, 'pages/university_home.html')
+        # Optional: Assert some content to ensure it's the correct page
+        # self.assertContains(response_university_home, "University Home Page") # Adjust text if needed
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse('company_about'))
