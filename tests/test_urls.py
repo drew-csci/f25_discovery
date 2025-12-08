@@ -29,7 +29,7 @@ class CompanyAboutAccessTests(TestCase):
         self.client.login(email='universityuser@example.com', password='testpassword123')
         response = self.client.get(reverse('company_about'))
         self.assertEqual(response.status_code, 302) # Expect a redirect
-        self.assertRedirects(response, reverse('screen1'))
+        self.assertRedirects(response, reverse('university_home'))
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse('company_about'))
