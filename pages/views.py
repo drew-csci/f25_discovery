@@ -111,7 +111,7 @@ def company_home(request):
         'projects': projects,
         'current_query': query if query else '',
         'current_field': field_filter,
-        'available_fields': available_fields,
+        'available_fields': available_fields, # Ensure this is passed to the template
     }
     return render(request, 'pages/company_home.html', context)
 
@@ -163,6 +163,26 @@ def company_profile(request):
         'company': company_data,
     }
     return render(request, 'pages/company_profile.html', context)
+
+
+@login_required
+def company_about(request):
+    # Restrict access to only company users
+    if request.user.user_type != User.UserType.COMPANY:
+        return redirect('screen1') # Redirect if not a company user
+
+    # Dummy data for the company about page
+    company_about_data = {
+        'name': request.user.username.title(),
+        'mission': 'To empower businesses with cutting-edge technology solutions that drive efficiency and innovation.',
+        'description': 'We specialize in solving complex business challenges through custom software development, cloud integration, and data analytics. Our goal is to help companies streamline operations, enhance customer engagement, and achieve sustainable growth.',
+        'contact_email': 'contact@examplecompany.com',
+    }
+    
+    context = {
+        'company': company_about_data,
+    }
+    return render(request, 'pages/company_about.html', context)
 
 
 @login_required
