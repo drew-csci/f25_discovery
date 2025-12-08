@@ -113,8 +113,9 @@
   <p class="sub">Connecting universities, companies, and researchers.</p>
 
   <div class="role-buttons">
-    <a href="{% url 'login' %}">Log In</a>
-    <a href="{% url 'register' %}">Sign Up</a>
+    <a href="{% url 'register' %}?type=university">Sign Up as a University</a>
+    <a href="{% url 'register' %}?type=company">Sign Up as a Company</a>
+    <a href="{% url 'register' %}?type=investor">Sign Up as an Investor</a>
   </div>
 
   <p class="hint">Already have an account?

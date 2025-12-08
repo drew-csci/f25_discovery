@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from .models import User
 
 class UserRegistrationForm(UserCreationForm):
-    user_type = forms.ChoiceField(choices=User.UserType.choices, widget=forms.RadioSelect)
+    user_type = forms.ChoiceField(choices=User.UserType.choices, widget=forms.HiddenInput)
 
     class Meta:
         model = User

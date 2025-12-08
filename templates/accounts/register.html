@@ -178,11 +178,7 @@
       {% if form.email.errors %}<div class="error">{{ form.email.errors.0 }}</div>{% endif %}
     </div>
     
-    <div class="user-type-group">
-      <legend>User type</legend>
-      {{ form.user_type }}
-      {% if form.user_type.errors %}<div class="error">{{ form.user_type.errors.0 }}</div>{% endif %}
-    </div>
+    {{ form.user_type }}
 
     <div class="form-group">
       <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
