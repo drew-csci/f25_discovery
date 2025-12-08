@@ -1,2 +1,0 @@
-This is Brenda's text file being pushed to the main branch.
-There is also a text file saved to "brenda_feature2" branch.

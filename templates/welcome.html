@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-600: #1d4ed8;
+      --ring: rgba(37, 99, 235, 0.25);
+      --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+      --radius: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --primary: #3b82f6;
+        --primary-600: #2563eb;
+        --ring: rgba(59, 130, 246, 0.35);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background: radial-gradient(1000px 600px at 50% -150px, rgba(37,99,235,.15), transparent 60%), var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(90vw, 460px);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+      border: 1px solid rgba(100,116,139,0.15);
+      text-align: center;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-600));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: .5px;
+      box-shadow: 0 6px 20px var(--ring);
+      user-select: none;
+      font-size: 1.4rem;
+      margin: 0 auto 16px;
+    }
+
+    h1 { font-size: 1.6rem; margin: 12px 0 6px; }
+    .sub { color: var(--muted); font-size: 1rem; margin-bottom: 22px; }
+
+    .role-buttons {
+      display: grid;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .role-buttons a {
+      display: block;
+      text-decoration: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 12px 16px;
+      transition: filter .2s, transform .05s;
+      box-shadow: 0 8px 20px var(--ring);
+    }
+
+    .role-buttons a:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .hint { color: var(--muted); font-size: .9rem; margin-top: 16px; }
+
+    a.text-link {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a.text-link:hover {
+      text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="card">
+  <div class="logo">DH</div>
+  <h1>Welcome to Discovery Hub</h1>
+  <p class="sub">Connecting universities, companies, and researchers.</p>
+
+  <div class="role-buttons">
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'register' %}">Sign Up</a>
+  </div>
+
+  <p class="hint">Already have an account?
+    <a href="{% url 'login' %}" class="text-link">Log in</a>
+  </p>
+</main>
+{% endblock body %}
+
+

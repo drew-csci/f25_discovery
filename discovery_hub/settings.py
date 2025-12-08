@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +13,8 @@ ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localh
 INSTALLED_APPS = [
     'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes',
     'django.contrib.sessions','django.contrib.messages','django.contrib.staticfiles',
-    'accounts','pages',
+    'django.contrib.postgres', # Required for ArrayField
+    'accounts','pages','tests',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,13 @@ DATABASES = {
     }
 }
 
+# Use in-memory SQLite database for testing to avoid permission issues and for speed.
+if 'test' in sys.argv or 'test' == os.environ.get('DJANGO_ENV'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+
 AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -75,3 +84,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'screen1'
 LOGOUT_REDIRECT_URL = 'login'
+
+# For development, print password reset emails to the console.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
