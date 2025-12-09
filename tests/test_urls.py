@@ -89,7 +89,7 @@ class DiscoverySearchTests(TestCase):
         # Check for dummy patent content
         self.assertContains(response, 'Method for Secure Data Transmission')
         self.assertContains(response, '<strong>Inventor:</strong> John Doe')
-        self.assertContains(response, 'Patent No.: US1012345')
+        self.assertContains(response, '<strong>Patent No.:</strong> US1012345')
         self.assertContains(response, 'A novel method for encrypting and transmitting data over insecure networks using quantum entanglement.')
 
         # Submit a query that matches publications
@@ -103,5 +103,5 @@ class DiscoverySearchTests(TestCase):
         # Check for dummy publication content
         self.assertContains(response, 'The Future of Quantum Computing')
         self.assertContains(response, '<strong>Authors:</strong> A. Einstein, N. Bohr')
-        self.assertContains(response, 'Journal: Physics Review (2023)')
+        self.assertContains(response, '<strong>Journal:</strong> Physics Review (2023)')
         self.assertContains(response, 'An overview of recent advancements and challenges in the field of quantum computing.')
