@@ -16,10 +16,16 @@
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href="{% url 'welcome' %}">Discovery&nbsp;Hub</a>
-        <nav>
-          <ul class="nav">
+        <nav class="flex items-center space-x-4">
+          <form action="{% url 'discovery_search' %}" method="get" class="flex">
+            <input type="search" name="q" placeholder="Search patents, publications..."
+                   class="px-3 py-1 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   value="{{ request.GET.q }}">
+            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Search</button>
+          </form>
+          <ul class="nav flex items-center space-x-4">
             {% if user.is_authenticated %}
-            <li><a href="{% url 'notifications' %}">Notifications</a></li>
+            <li><a href="{% url 'notifications' %}" class="hover:text-blue-700">Notifications</a></li>
             {% if user.user_type == 'company' %}
             <li><a href="{% url 'company_home' %}">Company&nbsp;Home</a></li>
             <li><a href="{% url 'company_profile' %}">Company&nbsp;Profile</a></li>
