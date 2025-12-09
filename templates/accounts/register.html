@@ -161,7 +161,9 @@
 </style>
 {% endblock styles %}
 
-{% block body %}
+{% block header %}{% endblock header %}
+
+{% block main_content %}
 <main class="card">
   <a href="{% url 'welcome' %}"><div class="logo">DH</div></a>
   <h1>Create Account</h1>
@@ -203,4 +205,6 @@
     <a href="{% url 'login' %}" class="text-link">Sign In</a>
   </p>
 </main>
-{% endblock body %}
+{% endblock main_content %}
+
+{% block footer %}{% endblock footer %}
