@@ -262,3 +262,32 @@ def company_about(request):
         'company': company_data,
     }
     return render(request, 'pages/company_about.html', context)
+
+
+@login_required
+def discovery_search(request):
+    query = request.GET.get('q', '')
+    
+    # Dummy data for patents and publications
+    # In a real application, this would query a database or external API
+    all_patents = [
+        {'id': 1, 'title': 'Method for Secure Data Transmission', 'inventor': 'John Doe', 'patent_number': 'US1012345', 'abstract': 'A novel method for encrypting and transmitting data over insecure networks using quantum entanglement.', 'link': '#'},
+        {'id': 2, 'title': 'AI-Powered Diagnostic System', 'inventor': 'Jane Smith', 'patent_number': 'US1098765', 'abstract': 'A system utilizing deep learning to diagnose medical conditions from imaging data with high accuracy.', 'link': '#'},
+        {'id': 3, 'title': 'Sustainable Water Purification Device', 'inventor': 'Alice Johnson', 'patent_number': 'US1077777', 'abstract': 'An eco-friendly device for purifying contaminated water using advanced filtration membranes.', 'link': '#'},
+    ]
+
+    all_publications = [
+        {'id': 1, 'title': 'The Future of Quantum Computing', 'authors': 'A. Einstein, N. Bohr', 'journal': 'Physics Review', 'year': 2023, 'abstract': 'An overview of recent advancements and challenges in the field of quantum computing.', 'link': '#'},
+        {'id': 2, 'title': 'Machine Learning in Medical Imaging', 'authors': 'C. Curie, L. Pasteur', 'journal': 'Journal of Biomedical Informatics', 'year': 2022, 'abstract': 'Exploring the application of various machine learning algorithms to medical image analysis.', 'link': '#'},
+        {'id': 3, 'title': 'Advanced Materials for Energy Storage', 'authors': 'M. Faraday, T. Edison', 'journal': 'Materials Science Today', 'year': 2024, 'abstract': 'Research into new materials with enhanced properties for battery and supercapacitor applications.', 'link': '#'},
+    ]
+
+    patents = [p for p in all_patents if query.lower() in p['title'].lower() or query.lower() in p['abstract'].lower() or query.lower() in p['inventor'].lower()]
+    publications = [pub for pub in all_publications if query.lower() in pub['title'].lower() or query.lower() in pub['abstract'].lower() or query.lower() in pub['authors'].lower()]
+
+    context = {
+        'query': query,
+        'patents': patents,
+        'publications': publications,
+    }
+    return render(request, 'pages/search_results.html', context)
