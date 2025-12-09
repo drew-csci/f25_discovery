@@ -8,7 +8,6 @@
 
 <div class="space-y-8">
     {% if patents or publications %}
-        {% if patents %}
         <section>
             <h2 class="text-2xl font-semibold mb-4 text-gray-700">Patents ({{ patents|length }})</h2>
             {% if patents %}
@@ -27,9 +26,7 @@
             <p class="text-gray-600">No patents found matching your query.</p>
             {% endif %}
         </section>
-        {% endif %}
 
-        {% if publications %}
         <section>
             <h2 class="text-2xl font-semibold mb-4 text-gray-700">Publications ({{ publications|length }})</h2>
             {% if publications %}
@@ -48,7 +45,6 @@
             <p class="text-gray-600">No publications found matching your query.</p>
             {% endif %}
         </section>
-        {% endif %}
     {% else %}
     <p class="text-lg text-gray-700">No patents or publications found for "{{ query }}". Try a different search term.</p>
     {% endif %}
