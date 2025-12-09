@@ -58,6 +58,7 @@
     </header>
     {% endblock header %}
 
+    {% block main_content %}
     <div class="container">
       <main>
         {% if messages %}
@@ -70,6 +71,7 @@
         {% block content %}{% endblock %}
       </main>
     </div>
+    {% endblock main_content %}
 
     {% block footer %}
     <footer class="site-footer">

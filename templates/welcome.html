@@ -104,9 +104,11 @@
       text-decoration: underline;
     }
 </style>
-{% endblock %}
+{% endblock styles %}
 
-{% block body %}
+{% block header %}{% endblock header %}
+
+{% block main_content %}
 <main class="card">
   <div class="logo">DH</div>
   <h1>Welcome to Discovery Hub</h1>
@@ -121,6 +123,8 @@
     <a href="{% url 'login' %}" class="text-link">Log in</a>
   </p>
 </main>
-{% endblock body %}
+{% endblock main_content %}
+
+{% block footer %}{% endblock footer %}
 
 
