@@ -1,1 +1,48 @@
-brenda
+venv\Scripts\activate
+python manage.py runserver
+
+
+aider --model gemini
+
+#To make sure Git stops tracking the current .aider cache files that are already in your repo, do this one-time cleanup
+git rm --cached .aider.tags.cache.v4/cache.db
+git rm --cached .aider.tags.cache.v4/cache.db-shm
+git rm --cached .aider.tags.cache.v4/cache.db-wal
+
+#Then commit the change:
+git commit -m "Remove .aider cache files from repo"
+
+git init
+ Creates a new Git repository in the current folder.
+
+
+git status
+ Shows tracked and untracked files and which changes are staged.
+
+
+git add <file> or git add .
+ Moves changes into the staging area.
+
+
+git commit -m "message"
+ Saves the staged changes with a message.
+
+
+git remote add origin <url>
+ Connects your local repository to a remote repository on GitHub named origin.
+
+
+git pull
+ Fetches and merges changes from remote into your current branch.
+
+
+git push
+ Sends your local commits to the remote repository.
+
+
+git clone <url>
+ Copies a remote repository to your local machine.
+
+
+to create a new folder
+mkdir .vscode
