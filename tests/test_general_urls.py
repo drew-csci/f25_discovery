@@ -39,9 +39,9 @@ class GeneralURLTests(TestCase):
         response = self.client.get(reverse('discovery_search'), {'q': query_term})
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<h1>Search Results for "secure"</h1>')
-        self.assertContains(response, '<h2>Patents (1)</h2>')
-        self.assertContains(response, '<h2>Publications (0)</h2>') # 'secure' only matches a patent in dummy data
+        self.assertContains(response, '<h1 class="text-3xl font-bold mb-6 text-gray-800">Search Results for "secure"</h1>')
+        self.assertContains(response, '<h2 class="text-2xl font-semibold mb-4 text-gray-700">Patents (1)</h2>')
+        self.assertContains(response, '<h2 class="text-2xl font-semibold mb-4 text-gray-700">Publications (0)</h2>') # 'secure' only matches a patent in dummy data
 
         # Check for dummy patent content
         self.assertContains(response, 'Method for Secure Data Transmission')
@@ -53,9 +53,9 @@ class GeneralURLTests(TestCase):
         query_term_pub = "quantum" # Matches 'The Future of Quantum Computing' publication
         response = self.client.get(reverse('discovery_search'), {'q': query_term_pub})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<h1>Search Results for "quantum"</h1>')
-        self.assertContains(response, '<h2>Patents (1)</h2>') # 'quantum' also matches 'quantum entanglement' in patent abstract
-        self.assertContains(response, '<h2>Publications (1)</h2>')
+        self.assertContains(response, '<h1 class="text-3xl font-bold mb-6 text-gray-800">Search Results for "quantum"</h1>')
+        self.assertContains(response, '<h2 class="text-2xl font-semibold mb-4 text-gray-700">Patents (1)</h2>') # 'quantum' also matches 'quantum entanglement' in patent abstract
+        self.assertContains(response, '<h2 class="text-2xl font-semibold mb-4 text-gray-700">Publications (1)</h2>')
 
         # Check for dummy publication content
         self.assertContains(response, 'The Future of Quantum Computing')
