@@ -147,7 +147,9 @@
 </style>
 {% endblock styles %}
 
-{% block body %}
+{% block header %}{% endblock header %}
+
+{% block main_content %}
 <main class="card">
   <a href="{% url 'welcome' %}"><div class="logo">DH</div></a>
   <h1>Log In{% if selected_user_type %} as {{ selected_user_type|title }}{% endif %}</h1>
@@ -204,4 +206,6 @@
     }
   });
 </script>
-{% endblock body %}
+{% endblock main_content %}
+
+{% block footer %}{% endblock footer %}
